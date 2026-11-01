@@ -98,6 +98,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include "common/thor.h"
 
 /*
 ** New sidebar for GlyphX multiplayer. ST - 3/26/2019 12:24PM
@@ -4127,7 +4128,11 @@ void HouseClass::MPlayer_Defeated(void)
     for (i = 0; i < MPlayerMax; i++) {
         hptr = HouseClass::As_Pointer((HousesType)(HOUSE_MULTI1 + i));
         if (hptr && hptr->IsDefeated == 0) {
-            if (hptr->IsHuman)
+            if (hptr->IsHuman
+#ifdef THOR_ENABLED
+                || (Thor_Demo().Enabled && hptr == PlayerPtr) // demo: AI plays for the player
+#endif
+            )
                 num_humans++;
             num_alive++;
         }

@@ -66,6 +66,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include "common/thor.h"
 #include "msgbox.h"
 #include "keyframe.h"
 #include "language.h"
@@ -1717,6 +1718,11 @@ bool Main_Loop()
     if (!GameActive)
         return (!GameActive);
 
+#ifdef THOR_ENABLED
+    /* Thor: Befehle vom unteren Bildschirm ausfuehren, Schnappschuss aktualisieren. */
+    Thor_Frame();
+#endif
+
     /*
     ** Call the focus loss handler
     */
@@ -2359,6 +2365,15 @@ extern void Play_Movie_GlyphX(const char* movie_name, ThemeType theme, bool imme
 
 void Play_Movie(char const* name, ThemeType theme, bool clrscrn, bool immediate)
 {
+#ifdef THOR_ENABLED
+    ThorMenuView thor_menu_view; // centred 640x400 frame on the 960x540 screen
+#endif
+#ifdef THOR_ENABLED
+    /* Thor: launcher option "skip videos" (intro, logos, briefings). */
+    if (Thor_Skip_Movies()) {
+        return;
+    }
+#endif
 #ifdef REMASTER_BUILD
     if (strcmp(name, "x") == 0 || strcmp(name, "X") == 0) {
         return;
@@ -3775,6 +3790,16 @@ static bool Change_Local_Dir(int cd)
     if (_detected == (1 << CD_DATADIR)) {
         cd = CD_DATADIR;
     }
+
+#if ANDROID
+    /*
+    ** Thor: the Remastered Collection ships one MAIN.MIX (RED_ALERT/CD1) that contains both the
+    ** Allied and the Soviet campaign. If only one of the two disc folders exists, it serves both.
+    */
+    if ((cd == 0 || cd == 1) && !(_detected & (1 << cd)) && (_detected & (1 << (1 - cd)))) {
+        cd = 1 - cd;
+    }
+#endif
 
     // If the data from the CD we want was detected, then double check it and set it as though we used the -CD command line.
     if (_detected & (1 << cd)) {

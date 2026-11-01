@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Thor Conquer</string>
+    <string name="tagline">COMMAND TERMINAL · AYN THOR EDITION</string>
+
+    <!-- Launcher -->
+    <string name="ra_title">Red Alert</string>
+    <string name="td_title">Tiberian Dawn</string>
+    <string name="ra_sub">ALLIES · SOVIET · EXPANSIONS</string>
+    <string name="td_sub">GDI · NOD</string>
+    <string name="play">PLAY</string>
+    <string name="data_ready">DATA READY</string>
+    <string name="data_missing">DATA MISSING</string>
+    <string name="section_files">GAME FILES</string>
+    <string name="section_content">CONTENT</string>
+    <string name="content_hint">Pick the campaign in the game menu.</string>
+    <string name="ra_allied">Allied campaign</string>
+    <string name="ra_soviet">Soviet campaign</string>
+    <string name="ra_cs">Counterstrike</string>
+    <string name="ra_am">Aftermath</string>
+    <string name="td_gdi">GDI campaign</string>
+    <string name="td_nod">Nod campaign</string>
+    <string name="td_covert">Covert Operations</string>
+    <string name="not_yet">not yet</string>
+
+    <string name="settings">SETTINGS</string>
+    <string name="set_resolution">RESOLUTION</string>
+    <string name="res_hd">640×400</string>
+    <string name="res_dos">320×200</string>
+    <string name="set_scroll">SCROLL SPEED</string>
+    <string name="set_cursor">CURSOR SPEED</string>
+    <string name="slow">Slow</string>
+    <string name="normal">Normal</string>
+    <string name="fast">Fast</string>
+    <string name="set_deck">DECK LAYOUT</string>
+    <string name="deck_large">Large</string>
+    <string name="deck_compact">Compact</string>
+    <string name="set_screens">SCREENS</string>
+    <string name="screens_dual">Dual</string>
+    <string name="screens_single">Single</string>
+
+    <string name="controls_legend">A  SELECT    ·    B  BACK</string>
+    <string name="data_setup">DATA SETUP</string>
+    <string name="about">ABOUT</string>
+
+    <!-- Data sheet -->
+    <string name="sheet_title">Game data setup</string>
+    <string name="sheet_intro">Thor Conquer uses the original game files from your own copy of the C&amp;C Remastered Collection (Steam). No game data is included or downloaded.</string>
+    <string name="sheet_where">COPY THE FILES TO</string>
+    <string name="sheet_ra_files">RED ALERT · from Data/CNCDATA/RED_ALERT</string>
+    <string name="sheet_td_files">TIBERIAN DAWN · from Data/CNCDATA/TIBERIAN_DAWN</string>
+    <string name="sheet_td_layout">CD1 files go into the folder itself. Put GENERAL.MIX and MOVIES.MIX from CD1 into gdi/ and from CD2 into nod/ to play both campaigns.</string>
+    <string name="sheet_adb">FROM A COMPUTER (ADB)</string>
+    <string name="sheet_adb_hint">The repository contains thor/copy-data.sh, which copies everything from a Steam install on the device in one step.</string>
+    <string name="sheet_note">File names are not case-sensitive. Uninstalling the app deletes this folder; updating it does not.</string>
+    <string name="close">CLOSE</string>
+
+    <string name="missing_title">Game data missing</string>
+    <string name="missing_body">%1$s cannot start. These files are missing:\n\n%2$s\n\nCopy them to:\n%3$s</string>
+    <string name="ok">OK</string>
+
+    <string name="about_title">About Thor Conquer</string>
+    <string name="about_body">Thor Conquer is a native Android build of Vanilla Conquer for the AYN Thor, with a command deck on the second screen.\n\nBased on Vanilla Conquer (TheAssemblyArmada) and the Android fork by sandstranger, both built on the source code Electronic Arts released under GPL-3.0. Licensed under GPL-3.0.\n\nFonts: Inter and JetBrains Mono, SIL Open Font License 1.1.\n\nCommand &amp; Conquer, Red Alert and Tiberian Dawn are trademarks of Electronic Arts Inc. This project is not affiliated with or endorsed by Electronic Arts.</string>
+
+    <!-- Deck -->
+    <string name="deck_credits">CREDITS</string>
+    <string name="deck_power">POWER</string>
+    <string name="deck_low_power">LOW POWER</string>
+    <string name="deck_output_drain">OUTPUT / DRAIN</string>
+    <string name="deck_radar">RADAR</string>
+    <string name="deck_online">ONLINE</string>
+    <string name="deck_offline">OFFLINE</string>
+    <string name="deck_radar_hint">Build a radar to enable the map</string>
+    <string name="deck_repair">REPAIR</string>
+    <string name="deck_sell">SELL</string>
+    <string name="deck_menu">MENU</string>
+    <string name="deck_status">STATUS</string>
+    <string name="deck_structures">STRUCTURES</string>
+    <string name="deck_units">UNITS</string>
+    <string name="deck_ready">READY</string>
+    <string name="deck_on_hold">ON HOLD</string>
+    <string name="deck_mode_place">PLACE STRUCTURE</string>
+    <string name="deck_mode_target">SELECT TARGET</string>
+    <string name="deck_mode_repair">REPAIR MODE</string>
+    <string name="deck_mode_sell">SELL MODE</string>
+    <string name="deck_side_allies">ALLIES</string>
+    <string name="deck_side_soviet">SOVIET</string>
+    <string name="deck_side_gdi">GDI</string>
+    <string name="deck_side_nod">NOD</string>
+    <string name="deck_h_place">Place structure</string>
+    <string name="deck_d_place">Tap the map on the top screen. Long-press there to cancel.</string>
+    <string name="deck_h_target">Select target</string>
+    <string name="deck_d_target">Tap the target on the top screen.</string>
+    <string name="deck_h_repair">Repair mode</string>
+    <string name="deck_d_repair">Tap a structure on the top screen. Tap REPAIR again to exit.</string>
+    <string name="deck_h_sell">Sell mode</string>
+    <string name="deck_d_sell">Tap a structure on the top screen. Tap SELL again to exit.</string>
+    <string name="deck_h_ready">Ready for orders</string>
+    <string name="deck_d_ready">Tap to build · tap READY to deploy · long-press to hold or cancel.</string>
+    <string name="deck_d_action">Tap again to hold · long-press to hold or cancel.</string>
+    <string name="deck_act_hold">%1$s · hold / cancel</string>
+    <string name="deck_act_deploy">%1$s · deploy</string>
+    <string name="deck_standby">COMMAND DECK · STANDBY</string>
+    <string name="deck_standby_hint">Build bar and radar appear here once a mission is running.</string>
+    <string name="set_language">LANGUAGE</string>
+    <string name="lang_system">System</string>
+    <string name="sheet_ra_layout">Put MAIN.MIX from CD1 into allied/ (it holds both the Allied and the Soviet campaign), and MAIN.MIX from COUNTERSTRIKE and AFTERMATH into counterstrike/ and aftermath/.</string>
+    <string name="set_videos">VIDEOS</string>
+    <string name="videos_play">Play</string>
+    <string name="videos_skip">Skip</string>
+    <string name="set_demo">DEMO MODE (RECORDING)</string>
+    <string name="set_highlights">TAP HIGHLIGHTS</string>
+    <string name="off">Off</string>
+    <string name="on">On</string>
+    <string name="res_wide" translatable="false">960×540 ·2</string>
+    <string name="deck_autopilot">AUTOPILOT</string>
+    <string name="deck_no_signal">NO SIGNAL</string>
+    <string name="deck_h_autopilot">Autopilot</string>
+    <string name="deck_d_autopilot">The AI plays. Tap AUTOPILOT above to take over.</string>
+</resources>

@@ -90,6 +90,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include "common/thor.h"
 #include <time.h>
 #include "framelimit.h"
 #define SHOW_MONO 0
@@ -3035,6 +3036,20 @@ static int Net_New_Dialog(void)
         scenariolist.Add_Item(strupr(MPlayerScenarios[i]));
     }
     ScenarioIdx = 0; // 1st scenario is selected
+#ifdef THOR_ENABLED
+    {
+        const char* names[512];
+        int n = 0;
+        for (; n < MPlayerScenarios.Count() && n < 512; n++) {
+            names[n] = MPlayerScenarios[n];
+        }
+        int pick = Thor_Demo_Pick_Map(names, n);
+        if (pick >= 0) {
+            ScenarioIdx = pick;
+            scenariolist.Set_Selected_Index(pick);
+        }
+    }
+#endif
 
     /*........................................................................
     Init player color-used flags
@@ -3051,6 +3066,11 @@ static int Net_New_Dialog(void)
     ........................................................................*/
     srand(time(NULL));
     Seed = rand();
+#ifdef THOR_ENABLED
+    if (Thor_Demo().Enabled && Thor_Demo().Seed) {
+        Seed = Thor_Demo().Seed; // demo: repeatable takes
+    }
+#endif
 
     /*........................................................................
     Init the message display system

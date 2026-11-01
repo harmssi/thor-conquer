@@ -1,0 +1,19 @@
+// Thor Conquer - Android-Huelle. Die nativen Bibliotheken (SDL2, OpenAL, vanillara/vanillatd,
+// thorbridge) werden AUSSERHALB von Gradle per CMake gebaut (thor/docker-build.sh) und nach
+// app/src/main/jniLibs/arm64-v8a gestaged. Gradle kompiliert nur Java und paketiert.
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+rootProject.name = "ThorConquer"
+include ':app'

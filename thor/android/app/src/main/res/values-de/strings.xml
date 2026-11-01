@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">KOMMANDOTERMINAL · AYN THOR EDITION</string>
+
+    <string name="ra_sub">ALLIIERTE · SOWJETS · ERWEITERUNGEN</string>
+    <string name="td_sub">GDI · NOD</string>
+    <string name="play">SPIELEN</string>
+    <string name="data_ready">DATEN BEREIT</string>
+    <string name="data_missing">DATEN FEHLEN</string>
+    <string name="section_files">SPIELDATEIEN</string>
+    <string name="section_content">INHALT</string>
+    <string name="content_hint">Die Kampagne wählst du im Spielmenü.</string>
+    <string name="ra_allied">Alliierte Kampagne</string>
+    <string name="ra_soviet">Sowjetische Kampagne</string>
+    <string name="td_gdi">GDI-Kampagne</string>
+    <string name="td_nod">Nod-Kampagne</string>
+    <string name="not_yet">noch nicht</string>
+
+    <string name="settings">EINSTELLUNGEN</string>
+    <string name="set_resolution">AUFLÖSUNG</string>
+    <string name="set_scroll">SCROLLTEMPO</string>
+    <string name="set_cursor">ZEIGERTEMPO</string>
+    <string name="slow">Langsam</string>
+    <string name="normal">Normal</string>
+    <string name="fast">Schnell</string>
+    <string name="set_deck">DECK-LAYOUT</string>
+    <string name="deck_large">Groß</string>
+    <string name="deck_compact">Kompakt</string>
+    <string name="set_screens">BILDSCHIRME</string>
+    <string name="screens_dual">Zwei</string>
+    <string name="screens_single">Einer</string>
+
+    <string name="controls_legend">A  AUSWÄHLEN    ·    B  ZURÜCK</string>
+    <string name="data_setup">DATEN EINRICHTEN</string>
+    <string name="about">ÜBER</string>
+
+    <string name="sheet_title">Spieldaten einrichten</string>
+    <string name="sheet_intro">Thor Conquer nutzt die Originaldateien aus deiner eigenen C&amp;C Remastered Collection (Steam). Es werden keine Spieldaten mitgeliefert oder heruntergeladen.</string>
+    <string name="sheet_where">DATEIEN KOPIEREN NACH</string>
+    <string name="sheet_ra_files">RED ALERT · aus Data/CNCDATA/RED_ALERT</string>
+    <string name="sheet_td_files">TIBERIAN DAWN · aus Data/CNCDATA/TIBERIAN_DAWN</string>
+    <string name="sheet_td_layout">Die CD1-Dateien kommen direkt in den Ordner. GENERAL.MIX und MOVIES.MIX von CD1 nach gdi/ und von CD2 nach nod/ legen, dann sind beide Kampagnen spielbar.</string>
+    <string name="sheet_adb">VOM COMPUTER (ADB)</string>
+    <string name="sheet_adb_hint">Im Repository liegt thor/copy-data.sh, das alles in einem Schritt aus einer Steam-Installation auf dem Gerät kopiert.</string>
+    <string name="sheet_note">Groß-/Kleinschreibung der Dateinamen ist egal. Beim Deinstallieren wird der Ordner gelöscht, beim Aktualisieren nicht.</string>
+    <string name="close">SCHLIESSEN</string>
+
+    <string name="missing_title">Spieldaten fehlen</string>
+    <string name="missing_body">%1$s kann nicht starten. Es fehlen:\n\n%2$s\n\nBitte kopieren nach:\n%3$s</string>
+
+    <string name="about_title">Über Thor Conquer</string>
+    <string name="about_body">Thor Conquer ist eine native Android-Version von Vanilla Conquer für den AYN Thor, mit Kommando-Deck auf dem zweiten Bildschirm.\n\nBasiert auf Vanilla Conquer (TheAssemblyArmada) und dem Android-Fork von sandstranger, beide auf Grundlage des von Electronic Arts unter GPL-3.0 veröffentlichten Quellcodes. Lizenz: GPL-3.0.\n\nSchriften: Inter und JetBrains Mono, SIL Open Font License 1.1.\n\nCommand &amp; Conquer, Red Alert und Tiberian Dawn sind Marken von Electronic Arts Inc. Dieses Projekt steht in keiner Verbindung zu Electronic Arts.</string>
+
+    <string name="deck_credits">CREDITS</string>
+    <string name="deck_power">STROM</string>
+    <string name="deck_low_power">STROM KNAPP</string>
+    <string name="deck_output_drain">ERZEUGUNG / BEDARF</string>
+    <string name="deck_radar_hint">Radar bauen, um die Karte zu sehen</string>
+    <string name="deck_repair">REPARIEREN</string>
+    <string name="deck_sell">VERKAUFEN</string>
+    <string name="deck_menu">MENÜ</string>
+    <string name="deck_structures">GEBÄUDE</string>
+    <string name="deck_units">EINHEITEN</string>
+    <string name="deck_ready">BEREIT</string>
+    <string name="deck_on_hold">ANGEHALTEN</string>
+    <string name="deck_mode_place">PLATZIEREN</string>
+    <string name="deck_mode_target">ZIEL WÄHLEN</string>
+    <string name="deck_mode_repair">REPARATUR</string>
+    <string name="deck_mode_sell">VERKAUF</string>
+    <string name="deck_side_allies">ALLIIERTE</string>
+    <string name="deck_side_soviet">SOWJETS</string>
+    <string name="deck_h_place">Gebäude platzieren</string>
+    <string name="deck_d_place">Oben auf die Karte tippen. Dort lange drücken bricht ab.</string>
+    <string name="deck_h_target">Ziel wählen</string>
+    <string name="deck_d_target">Oben auf das Ziel tippen.</string>
+    <string name="deck_h_repair">Reparaturmodus</string>
+    <string name="deck_d_repair">Oben auf ein Gebäude tippen. REPARIEREN erneut tippen zum Beenden.</string>
+    <string name="deck_h_sell">Verkaufsmodus</string>
+    <string name="deck_d_sell">Oben auf ein Gebäude tippen. VERKAUFEN erneut tippen zum Beenden.</string>
+    <string name="deck_h_ready">Bereit für Befehle</string>
+    <string name="deck_d_ready">Tippen = bauen · BEREIT tippen = einsetzen · lange drücken = anhalten/abbrechen.</string>
+    <string name="deck_d_action">Erneut tippen = anhalten · lange drücken = anhalten/abbrechen.</string>
+    <string name="deck_act_hold">%1$s · anhalten / abbrechen</string>
+    <string name="deck_act_deploy">%1$s · einsetzen</string>
+    <string name="deck_standby">KOMMANDO-DECK · BEREITSCHAFT</string>
+    <string name="deck_standby_hint">Bauleiste und Radar erscheinen hier, sobald eine Mission läuft.</string>
+    <string name="set_language">SPRACHE</string>
+    <string name="lang_system">System</string>
+    <string name="sheet_ra_layout">MAIN.MIX von CD1 kommt nach allied/ (sie enthält die alliierte und die sowjetische Kampagne), MAIN.MIX von COUNTERSTRIKE und AFTERMATH nach counterstrike/ bzw. aftermath/.</string>
+    <string name="deck_status">STATUS</string>
+    <string name="deck_online">AKTIV</string>
+    <string name="deck_offline">INAKTIV</string>
+    <string name="set_videos">VIDEOS</string>
+    <string name="videos_play">Abspielen</string>
+    <string name="videos_skip">Überspringen</string>
+    <string name="set_demo">DEMO-MODUS (AUFNAHME)</string>
+    <string name="set_highlights">TIPP-MARKIERUNG</string>
+    <string name="off">Aus</string>
+    <string name="on">An</string>
+    <string name="deck_autopilot">AUTOPILOT</string>
+    <string name="deck_no_signal">KEIN SIGNAL</string>
+    <string name="deck_h_autopilot">Autopilot</string>
+    <string name="deck_d_autopilot">Die KI spielt. Oben AUTOPILOT antippen, um zu übernehmen.</string>
+</resources>

@@ -40,6 +40,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include <time.h>
 #include "loaddlg.h"
 #include "common/file.h"
 #include "common/framelimit.h"
@@ -421,6 +422,16 @@ int LoadOptionsClass::Process(void)
         ** Save: Save the game & exit the dialog
         */
         case (BUTTON_SAVE | KN_BUTTON):
+#if ANDROID
+            /*
+            ** Thor: no keyboard on the handheld - use date and time as the description if empty.
+            */
+            if (!strlen(game_descr)) {
+                time_t now = time(nullptr);
+                struct tm* lt = localtime(&now);
+                strftime(game_descr, sizeof(game_descr), "Thor %d.%m. %H:%M", lt);
+            }
+#endif
             if (!strlen(game_descr)) {
                 WWMessageBox().Process(TXT_MUSTENTER_DESCRIPTION);
                 firsttime = true;

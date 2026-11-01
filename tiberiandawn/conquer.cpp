@@ -59,6 +59,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include "common/thor.h"
 #include "common/irandom.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -1557,6 +1558,11 @@ bool Main_Loop()
     if (Get_Mouse_State())
         Show_Mouse();
 
+#ifdef THOR_ENABLED
+    /* Thor: Befehle vom unteren Bildschirm ausfuehren, Schnappschuss aktualisieren. */
+    Thor_Frame();
+#endif
+
     /*
     ** Call the focus loss handler
     */
@@ -2127,6 +2133,15 @@ extern void Play_Movie_GlyphX(const char* movie_name, ThemeType theme);
 
 void Play_Movie(char const* name, ThemeType theme, bool clrscrn)
 {
+#ifdef THOR_ENABLED
+    ThorMenuView thor_menu_view; // centred 640x400 frame on the 960x540 screen
+#endif
+#ifdef THOR_ENABLED
+    /* Thor: launcher option "skip videos" (intro, logos, briefings). */
+    if (Thor_Skip_Movies()) {
+        return;
+    }
+#endif
 #if REMASTER_BUILD
     if (strcmp(name, "x") == 0 || strcmp(name, "X") == 0) {
         return;

@@ -10,10 +10,6 @@ foreach(_path_elem $ENV{CMAKE_FIND_ROOT_PATH})
 endforeach()
 
 if (ANDROID)
-    add_definitions(-DAL_ALEXT_PROTOTYPES)
-endif()
-
-if (ANDROID)
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 else ()
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
@@ -26,6 +22,12 @@ if(NOT DEFINED CMAKE_BUILD_TYPE)
 endif()
 
 project(VanillaConquer C CXX)
+
+# ANDROID wird erst durch die Toolchain in project() gesetzt; die Abfrage muss danach stehen,
+# sonst fehlt AL_ALEXT_PROTOTYPES, wenn Vanilla Conquer als Top-Level-Projekt gebaut wird.
+if (ANDROID)
+    add_definitions(-DAL_ALEXT_PROTOTYPES)
+endif()
 
 option(BUILD_REMASTERTD "Build Tiberian Dawn remaster dll." OFF)
 option(BUILD_REMASTERRA "Build Red Alert remaster dll." OFF)

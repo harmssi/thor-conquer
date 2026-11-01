@@ -131,6 +131,11 @@ set(COMMONV_SRC
     wwmouse.cpp
 )
 
+if(ANDROID)
+    # Thor Conquer: Schnittstelle fuer den zweiten Bildschirm
+    list(APPEND COMMONV_SRC thor.cpp)
+endif()
+
 if(DSOUND)
     list(APPEND COMMONV_SRC soundio.cpp vqaaudio_dsound.cpp)
     list(APPEND VANILLA_LIBS dsound)

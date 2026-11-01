@@ -92,6 +92,8 @@
 //	Warning - Most disgusting cpp file of all time. ajw
 
 #include "function.h"
+#include "common/thor.h"
+#define THOR_DEMO_CLAMP(v, lo, hi) ((v) < (lo) ? (lo) : ((v) > (hi) ? (hi) : (v)))
 #include "common/framelimit.h"
 #include "colrlist.h"
 #include "cheklist.h"
@@ -1281,7 +1283,12 @@ static int Net_Join_Dialog(void)
             //..................................................................
             if (display >= REDRAW_BUTTONS) {
                 aiplayersgauge.Set_Maximum(Rule.MaxPlayers - Session.Players.Count());
-                if (Session.Options.AIPlayers > Rule.MaxPlayers - Session.Players.Count()) {
+            #ifdef THOR_ENABLED
+    if (Thor_Demo().Enabled && Thor_Demo().Opponents > 0) {
+        Session.Options.AIPlayers = Thor_Demo().Opponents;
+    }
+#endif
+    if (Session.Options.AIPlayers > Rule.MaxPlayers - Session.Players.Count()) {
                     aiplayersgauge.Set_Value(Rule.MaxPlayers - Session.Players.Count());
                 }
                 commands->Draw_All();
@@ -2118,7 +2125,12 @@ static int Net_Join_Dialog(void)
             countgauge.Set_Value(Session.Options.UnitCount - SessionClass::CountMin[Session.Options.Bases]);
             levelgauge.Set_Value(BuildLevel - 1);
             creditsgauge.Set_Value(Session.Options.Credits);
-            if (Session.Options.AIPlayers > Rule.MaxPlayers - Session.Players.Count()) {
+        #ifdef THOR_ENABLED
+    if (Thor_Demo().Enabled && Thor_Demo().Opponents > 0) {
+        Session.Options.AIPlayers = Thor_Demo().Opponents;
+    }
+#endif
+    if (Session.Options.AIPlayers > Rule.MaxPlayers - Session.Players.Count()) {
                 aiplayersgauge.Set_Value(Rule.MaxPlayers - Session.Players.Count());
             } else {
                 aiplayersgauge.Set_Value(Session.Options.AIPlayers);
@@ -2148,7 +2160,12 @@ static int Net_Join_Dialog(void)
             display = REDRAW_MESSAGE;
         } else if (event == EV_NEW_PLAYER || event == EV_PLAYER_SIGNOFF) {
             aiplayersgauge.Set_Maximum(Rule.MaxPlayers - Session.Players.Count());
-            if (Session.Options.AIPlayers > Rule.MaxPlayers - Session.Players.Count()) {
+        #ifdef THOR_ENABLED
+    if (Thor_Demo().Enabled && Thor_Demo().Opponents > 0) {
+        Session.Options.AIPlayers = Thor_Demo().Opponents;
+    }
+#endif
+    if (Session.Options.AIPlayers > Rule.MaxPlayers - Session.Players.Count()) {
                 aiplayersgauge.Set_Value(Rule.MaxPlayers - Session.Players.Count());
             }
         } else if (event == EV_GAME_SIGNOFF) {
@@ -3698,6 +3715,21 @@ static int Net_New_Dialog(void)
     }
 
     Session.Options.ScenarioIndex = 0; // 1st scenario is selected
+#ifdef THOR_ENABLED
+    {
+        /* Demo mode: pick the map by name or index (any row, not only the visible ones). */
+        const char* names[512];
+        int n = 0;
+        for (; n < scenariolist.Count() && n < 512; n++) {
+            names[n] = scenariolist.Get_Item(n);
+        }
+        int pick = Thor_Demo_Pick_Map(names, n);
+        if (pick >= 0) {
+            Session.Options.ScenarioIndex = pick;
+            scenariolist.Set_Selected_Index(pick);
+        }
+    }
+#endif
 #ifdef FIXIT_VERSION_3
     bAftermathMultiplayer = Is_Aftermath_Installed();
 //	debugprint( "Host decides that, initially, bAftermathMultiplayer is %i\n", bAftermathMultiplayer );
@@ -3720,6 +3752,11 @@ static int Net_New_Dialog(void)
     //------------------------------------------------------------------------
     srand(time(NULL));
     Seed = rand();
+#ifdef THOR_ENABLED
+    if (Thor_Demo().Enabled && Thor_Demo().Seed) {
+        Seed = Thor_Demo().Seed; // demo: repeatable takes
+    }
+#endif
 
     //------------------------------------------------------------------------
     //	Init the message display system
@@ -3780,6 +3817,11 @@ static int Net_New_Dialog(void)
     // Now init the max range of the AI players slider.
     //
     aiplayersgauge.Set_Maximum(Rule.MaxPlayers - Session.Players.Count());
+#ifdef THOR_ENABLED
+    if (Thor_Demo().Enabled && Thor_Demo().Opponents > 0) {
+        Session.Options.AIPlayers = THOR_DEMO_CLAMP(Thor_Demo().Opponents, 1, Rule.MaxPlayers - Session.Players.Count());
+    }
+#endif
     aiplayersgauge.Set_Value(Session.Options.AIPlayers);
 
     //------------------------------------------------------------------------
@@ -5571,6 +5613,11 @@ static int Net_Fake_New_Dialog(void)
     //------------------------------------------------------------------------
     //	randomize();
     Seed = rand();
+#ifdef THOR_ENABLED
+    if (Thor_Demo().Enabled && Thor_Demo().Seed) {
+        Seed = Thor_Demo().Seed; // demo: repeatable takes
+    }
+#endif
 
     //------------------------------------------------------------------------
     //	Init the version-clipping system

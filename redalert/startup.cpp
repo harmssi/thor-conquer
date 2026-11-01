@@ -35,6 +35,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include "common/thor.h"
 #include "language.h"
 #include "settings.h"
 #include "common/paths.h"
@@ -307,6 +308,19 @@ int main(int argc, char* argv[])
     */
     Paths.Init("vanillara", CONFIG_FILE_NAME, "REDALERT.MIX", args.ArgV[0]);
     CDFileClass::Refresh_Search_Drives();
+#if ANDROID
+    /*
+    ** Thor: Ohne Spieldaten stuerzt die Engine spaeter in Init_Game ab (fehlende Palette).
+    ** Stattdessen hier sauber mit einer Meldung abbrechen.
+    */
+    if (!RawFileClass("REDALERT.MIX").Is_Available()) {
+        std::string msg = "Spieldaten fehlen: REDALERT.MIX nicht gefunden in\n" + g_pathToResources
+                          + "\n\nBitte die MIX-Dateien dorthin kopieren (siehe README).";
+        DBG_ERROR("%s", msg.c_str());
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Red Alert - Spieldaten fehlen", msg.c_str(), nullptr);
+        return EXIT_FAILURE;
+    }
+#endif
 
     if (Parse_Command_Line(args.ArgC, args.ArgV)) {
 
@@ -349,6 +363,12 @@ int main(int argc, char* argv[])
             RESFACTOR = 1;
             ScreenWidth = 320;
             ScreenHeight = 200;
+        }
+#endif
+#ifdef THOR_ENABLED
+        if (Thor_Big_View() && !Settings.Video.DOSMode) {
+            ScreenWidth = 960;
+            ScreenHeight = 540;
         }
 #endif
         Set_Resfactor_Globals(RESFACTOR);
@@ -438,6 +458,11 @@ int main(int argc, char* argv[])
 
         SeenBuff.Attach(&VisiblePage, 0, 0, ScreenWidth, ScreenHeight);
         HidPage.Attach(&HiddenPage, 0, 0, ScreenWidth, ScreenHeight);
+#ifdef THOR_ENABLED
+        if (ScreenWidth == 960) {
+            Thor_Game_Set_View(false); // menus: centred 640x400 frame
+        }
+#endif
 
         Options.Adjust_Variables_For_Resolution();
 

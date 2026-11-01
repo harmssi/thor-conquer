@@ -199,6 +199,18 @@ const char* PathsClass::Program_Path()
 const char* PathsClass::Data_Path()
 {
     if (DataPath.empty()) {
+#if ANDROID
+        /*
+        ** Thor: Program_Path() ist auf Android /system/bin (app_process). Die Spieldaten liegen im
+        ** Ressourcenordner, in den SDL_main per chdir() wechselt. Damit findet auch die CD-Erkennung
+        ** (".", gdi/nod/covertops bzw. allied/soviet/counterstrike/aftermath) die Daten dort.
+        */
+        char cwd[PATH_MAX];
+        if (getcwd(cwd, sizeof(cwd)) != nullptr) {
+            DataPath = cwd;
+            return DataPath.c_str();
+        }
+#endif
         if (ProgramPath.empty()) {
             // Init the program path first if it hasn't been done already.
             Program_Path();

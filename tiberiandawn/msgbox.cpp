@@ -35,6 +35,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include "common/thor.h"
 #include "msgbox.h"
 #include "gadget.h"
 #include "common/framelimit.h"
@@ -78,6 +79,9 @@ WWMessageBox::WWMessageBox(int caption, bool pict)
 #define BUTTON_FLAG 0x8000
 int WWMessageBox::Process(const char* msg, const char* b1txt, const char* b2txt, const char* b3txt, bool preserve)
 {
+#ifdef THOR_ENABLED
+    ThorMenuView thor_menu_view; // dialogs are laid out for 640x400
+#endif
 #define BUFFSIZE (511)
     char buffer[BUFFSIZE] = {0};
     int retval = 0;

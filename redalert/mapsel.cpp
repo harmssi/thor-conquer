@@ -36,6 +36,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include "common/thor.h"
 #include "interpal.h"
 #include "common/settings.h"
 #include "common/winasm.h"
@@ -98,6 +99,9 @@ struct point
 extern bool StreamLowImpact;
 char const* Map_Selection(void)
 {
+#ifdef THOR_ENABLED
+    ThorMenuView thor_menu_view; // centred 640x400 frame on the 960x540 screen
+#endif
 #ifdef REMASTER_BUILD
     return NULL;
 #else

@@ -36,6 +36,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include "common/thor.h"
 #include "textblit.h"
 #include "common/irandom.h"
 #include "common/settings.h"
@@ -416,6 +417,9 @@ const char* GetMapSelString(unsigned int index)
  *=============================================================================================*/
 void Map_Selection(void)
 {
+#ifdef THOR_ENABLED
+    ThorMenuView thor_menu_view; // centred 640x400 frame on the 960x540 screen
+#endif
     void *anim, *progress, *oldfont, *greyearth, *greyearth2;
     unsigned char localpalette[768];
     int scenario, lastscenario;

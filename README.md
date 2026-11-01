@@ -1,147 +1,149 @@
-# Vanilla Conquer
-Vanilla Conquer is a fully portable version of the first generation C&C engine and is capable of running both Tiberian Dawn and Red Alert on multiple platforms. It can also be used for mod development for the Remastered Collection.
+# Thor Conquer
 
-The main focus of Vanilla Conquer is to keep the default out-of-box experience faithful to what the games were back when they were released and work as a drop-in replacement for the original executables while also providing bug fixes, compatiblity and quality of life improvements.
+**Command & Conquer: Tiberian Dawn and Red Alert, native on the AYN Thor, with a command deck on the second screen.**
 
-Current project goals are tracked as [GitHub issues with the goal label](https://github.com/Vanilla-Conquer/Vanilla-Conquer/issues?q=is%3Aissue+is%3Aopen+label%3Agoal).
+Thor Conquer is an Android (arm64) build of [Vanilla Conquer](https://github.com/TheAssemblyArmada/Vanilla-Conquer) made for the AYN Thor dual-screen handheld:
 
-## Chat with us
+- **Top screen (1920×1080):** only the tactical map. The engine renders 960×540 and is scaled exactly 2× (pixel-perfect, no stretching, no bars), so you see far more of the battlefield at the classic sprite size. The sidebar and the top tab bar are gone. Menus, films and the score screen keep their original 640×400 layout and are shown as a centred frame, also at 2×. Maps smaller than the screen are centred on black.
+- **Bottom screen (1240×1080):** a touch command deck with credits, a power meter, a framed radar, REPAIR / SELL / MENU, and two build columns with the in-game cameos, build progress, READY and ON HOLD badges.
+- **Controller and touch** on the top screen, a launcher with data check and settings, and an English UI with German, Spanish and French translations.
 
-There are rooms on multiple platforms for discussion:
+![Top and bottom screen on the AYN Thor](thor/docs/dual-screen.png)
 
-- [The Assembly Armada](https://discord.gg/UnWK2Tw) on [Discord](https://discord.gg)
-- [#vanilla-conquer:vi.fi](https://matrix.to/#/#vanilla-conquer:vi.fi) on [Matrix](https://matrix.org)
-- [#vanilla-conquer](https://web.libera.chat/?channel=#vanilla-conquer) on [Libera.Chat](https://libera.chat]) IRC network
+![Launcher](thor/docs/launcher.png)
 
-All of these rooms are bridged together so people can choose their preferred service. Please be nice to each other.
+> Thor Conquer ships **no game data**; it runs on the original files from your own copy of the *C&C Remastered Collection*. The in-game picture above is rendered from the author's own copy.
+
+**Download:** the APK is on the [Releases](../../releases) page (arm64, Android 13+).
+
+---
+
+## Features
+
+| | |
+|---|---|
+| **Dual screen** | The deck is an Android `Presentation` on display 4 (`FLAG_NOT_FOCUSABLE`, so the controller stays with the game). If there is no second screen, the classic sidebar is shown on the top screen instead. |
+| **Engine-faithful** | Every deck action goes through the engine's normal input path: build clicks run through the original sidebar button code, a radar tap does what a radar click does, and REPAIR and SELL are the sidebar buttons. No game state is changed directly. |
+| **Build deck** | Tap = build or deploy when READY. Tap again while building = hold. Long-press = hold, then cancel. The progress sweep is drawn over the cameo. The accent color follows the faction: amber for Allies/GDI, red for Soviet/Nod. |
+| **Radar** | The minimap is rendered from the engine's cell colors, with a viewport frame. Tap or drag on it to scroll the map. |
+| **Top-screen touch** | Tap = select / left click · drag = selection box · two-finger drag = scroll · long-press or two-finger tap = right click (deselect / cancel). |
+| **Controller** | Left stick = cursor, right stick = scroll, A = left click, B = right click, Select = Esc (menu), Start = Enter, X/Y = G/F, D-pad = 1–4. **L1/R1** move a focus ring through the deck's build items, and **A** builds the focused item while the ring is visible. |
+| **Content** | Red Alert: Allied, Soviet, Counterstrike, Aftermath. Tiberian Dawn: GDI, Nod. Covert Operations is not supported yet. |
+| **Languages** | English (default), Deutsch, Español, Français. The app follows the system language; you can override it in Settings → Language. |
+
+## Demo / autopilot mode (recording)
+
+For videos without a player. The player's house is handed to the engine's own computer AI (the same thing the engine does when a multiplayer player disconnects); no game rules are changed. Music is off, sound effects stay on, and all videos are skipped. The camera glides calmly to new buildings and fights and does a "radar jump" every 20–40 s, shown as a pulse on the deck radar. From time to time a scripted deck tap builds something through the normal sidebar path, with an optional ripple on the cameo.
+
+```sh
+adb shell am start -n de.harmssi.thorconquer/.GameActivity \
+    --es game ra --ez demo true --ei seed 1234 --ei opponents 2 --ei map 6 \
+    [--ei speed 3] [--ez highlights false]
+```
+
+- Pick the map with `--es map_name "Equal Opportunity"` (part of the name, any language of the list) or `--ei map N` (index in the full list).
+- `seed` makes a take repeatable.
+- `speed` is the engine game speed (0 = fastest).
+- Every event is logged with a timestamp to `/sdcard/Android/data/de.harmssi.thorconquer/files/demo-events.jsonl`. Each line holds `t_ms`, `type`, `mode` (scripted or automatic) and `desc`.
+- The launcher has the same switch under Settings → Demo mode.
+
+- Scripted deck taps rotate through useful items: a power plant when power is low, otherwise refinery → barracks → war factory → defense → infantry → vehicle.
+- Tap the **AUTOPILOT** chip in the deck header to take over. The house is handed back to you, for example to fire a superweapon yourself.
+
+Works in Red Alert and Tiberian Dawn. In TD the autopilot first drives the starting MCV to a free spot, using normal unit orders, because TD's AI does not move a blocked MCV by itself.
+
+## Game data
+
+You need your own copy of the **Command & Conquer Remastered Collection** (Steam). The legacy game files are in `Data/CNCDATA/`. Thor Conquer reads them from its own folder, so it needs no extra permissions:
+
+```
+/sdcard/Android/data/de.harmssi.thorconquer/files/
+├── redalert/
+│   ├── REDALERT.MIX  EXPAND.MIX  EXPAND2.MIX  HIRES1.MIX  LORES1.MIX   ← RED_ALERT/CD1
+│   ├── allied/MAIN.MIX           ← RED_ALERT/CD1   (Allied + Soviet campaign)
+│   ├── counterstrike/MAIN.MIX    ← RED_ALERT/COUNTERSTRIKE
+│   └── aftermath/MAIN.MIX        ← RED_ALERT/AFTERMATH
+├── tiberiandawn/
+│   ├── CONQUER.MIX CCLOCAL.MIX LOCAL.MIX TEMPERAT.MIX DESERT.MIX WINTER.MIX SOUNDS.MIX
+│   │   SPEECH.MIX SCORES.MIX TRANSIT.MIX UPDATE.MIX UPDATEC.MIX UPDATA.MIX
+│   │   TEMPICNH.MIX DESEICNH.MIX WINTICNH.MIX ZOUNDS.MIX SC-000.MIX SC-001.MIX   ← TIBERIAN_DAWN/CD1
+│   ├── gdi/GENERAL.MIX  gdi/MOVIES.MIX    ← TIBERIAN_DAWN/CD1
+│   └── nod/GENERAL.MIX  nod/MOVIES.MIX    ← TIBERIAN_DAWN/CD2
+└── config/                       ← settings and save games (created by the app)
+```
+
+Disc-specific files go into sub folders, the engine's "local CD" folders. A flat layout with everything in `redalert/` or `tiberiandawn/` also works, but then only the first campaign or disc is playable.
+
+**Minimum:** Red Alert needs `REDALERT.MIX` + `MAIN.MIX`. Tiberian Dawn needs `CONQUER.MIX`, `GENERAL.MIX`, `CCLOCAL.MIX`, `TEMPERAT.MIX`, `DESERT.MIX`, `WINTER.MIX` and `SOUNDS.MIX`. The launcher shows a checklist and what is missing. Case does not matter, and empty files count as missing.
+
+**Steam on the device (e.g. DroiDeck):** `thor/copy-data.sh` copies everything over adb in one step. It only reads the Steam folder:
+
+```sh
+thor/copy-data.sh          # Red Alert + Tiberian Dawn
+thor/copy-data.sh ra       # Red Alert only
+STEAM_DIR=/path/to/CnCRemastered thor/copy-data.sh
+```
+
+Uninstalling the app deletes its data folder. Updating it (`adb install -r`) does not.
 
 ## Building
 
-We support wide variety of compilers and platforms to target. Vanilla Conquer is known to compile with recent enough gcc, MSVC, mingw-w64 or clang and known to run on Windows, Linux, macOS and BSDs.
-
-### Presets
-
-A [CMakePresets.json](CMakePresets.json) file is provided that contains presets for common build configurations and is used by our CI scripts to build the release builds. These presets require the [Ninja](https://ninja-build.org/) build tool to be available in the system PATH in order to be used.
-
-We also provide an example [CMakeUserPresets.json](resources/CMakeUserPresets.json.example) that can be copied to the root source directory and renamed. You can edit this file to create your own development presets that won't be included in git commits. A few example presets are provided which override the release presets to build a "debug" configuration.
-
-To build using a preset, add `--preset preset_name` to the CMake command line examples below.
-
-### Windows
-
-#### Requirements
-
-The following components are needed to build Vanilla Conquer executables:
-
- - [MSVC v142 C++ x86/x64 build tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
- - Windows 10 SDK
- - CMake (installable from MSVC build tools)
- - [SDL1 or SDL2 development libraries, Visual C++](https://libsdl.org/download-2.0.php)
- - [OpenAL Core SDK](https://www.openal.org/downloads/)
-
-Extract SDL2 and OpenAL somewhere you know. If you are building only Remastered dlls you can skip installing SDL2 and OpenAL.
-
-#### Building
-
-In a VS command line window in the Vanilla Conquer source directory:
+The native code (SDL2 2.30.9, openal-soft 1.24.3, Vanilla Conquer, the JNI bridge) is built with CMake and the NDK. Gradle only compiles the Java shell and packages the APK.
 
 ```sh
-cmake -DSDL2_ROOT_DIR=C:\path\to\SDL2 -DOPENAL_ROOT=C:\path\to\OpenAL -B build .
-cmake --build build
+thor/build.sh            # → dist/ThorConquer.apk
+thor/build.sh --install  # also adb install -r
 ```
 
-This will build Vanilla Conquer executables in the build directory. If you are building Remastered dlls you need to configure cmake with `-A win32` and ensure your VS command line is x86.
+`build.sh` syncs the tree to a Linux build host (`THOR_BUILD_HOST=user@host`) and runs `thor/docker-build.sh` in the Docker image `thor-build` (build it once with `docker build -t thor-build thor/`, see `thor/Dockerfile`):
 
-### Linux / macOS / BSD
+- Ubuntu 22.04, JDK 17, Android SDK 35 and build-tools 35, NDK 27.2.12479018, Gradle 8.9, CMake ≥ 3.25, Ninja
 
-#### Requirements
+To build locally, run `thor/docker-build.sh` with `/work` pointing to a work directory that contains the source in `/work/src`.
 
-- GNU C++ Compiler (g++) or Clang
-- CMake
-- SDL1 or SDL2
-- OpenAL
+The first build creates your own signing key in `/work/keystore/thorconquer.jks`; keep it so later builds install as updates. Release APKs on GitHub are signed with the maintainer's key – builds with a different key must be installed fresh (uninstalling removes the game data in the app folder; back it up first).
 
-On Debian/Ubuntu you can install the build requirements as follows:
+### Layout
 
-```sh
-sudo apt update
-sudo apt install g++ cmake libsdl2-dev libopenal-dev
-or
-sudo apt install g++ cmake libsdl1.2-dev libopenal-dev
-```
+| Path | What |
+|---|---|
+| `common/thor.{h,cpp}` | Engine side of the deck: command queue, snapshot (build list, radar, credits/power, faction), cameo extraction |
+| `redalert/thor_game.cpp`, `tiberiandawn/thor_game.cpp` | Game-specific snapshot and commands (sidebar/radar click paths) |
+| `common/video_sdl2.cpp`, `common/wwkeyboard_sdl2.cpp` | Aspect-correct output, touch gestures |
+| `thor/native/thorbridge.c` | JNI bridge (`dlsym` into the game library) |
+| `thor/android/` | Launcher, game activity, deck (`ThorDeck`), design system (`Ui`), emblems |
 
-On Fedora/RedHat based system you can install the build requirements as follows:
+All engine changes are behind `#if ANDROID`.
 
-```sh
-sudo dnf install gcc-c++ cmake SDL2-devel openal-soft-devel
-or
-sudo dnf install gcc-c++ cmake SDL-devel openal-soft-devel
-```
+## Credits & license
 
-#### Building
+- **Vanilla Conquer** by [TheAssemblyArmada](https://github.com/TheAssemblyArmada/Vanilla-Conquer), GPL-3.0
+- **Android fork** by [sandstranger](https://github.com/sandstranger/Vanilla-Conquer) (branch `android`), GPL-3.0
+- Based on the **C&C Remastered Collection source code** released by Electronic Arts under GPL-3.0 with additional terms ([EA's release](https://github.com/electronicarts/CnC_Remastered_Collection))
+- [SDL](https://libsdl.org) (zlib) and [openal-soft](https://github.com/kcat/openal-soft) (LGPL-2.0)
+- Fonts: [Inter](https://rsms.me/inter/) and [JetBrains Mono](https://www.jetbrains.com/lp/mono/), SIL Open Font License 1.1 (see `thor/licenses/`)
+- Thor Conquer's own code is GPL-3.0, like the engine (see `License.txt`).
 
-```sh
-cmake -B build .
-cmake --build build
-```
+The emblems, the app icon and the UI are original work. No EA/Westwood logos, fonts or artwork are included. Cameos and the radar are rendered at runtime from the user's own game files.
 
-This will build Vanilla Conquer executables in the build directory.
+**Trademark notice:** Command & Conquer, Red Alert and Tiberian Dawn are trademarks or registered trademarks of Electronic Arts Inc. This project is not affiliated with, endorsed by or sponsored by Electronic Arts. You need to own the game to use it.
 
-#### macOS considerations
+---
 
-To create a portable bundle for macOS we run [macdylibbundler](https://github.com/auriamg/macdylibbundler) in our CI builds as an extra step to add the SDL2 and OpenAL libraries to the bundle. If you wish to create a portable bundle yourself, you will need to do this step manually as CMake will not currently do it for you.
+## Deutsch
 
-### Icons
+Thor Conquer bringt C&C Tiberian Dawn und Red Alert nativ auf den AYN Thor. Oben läuft nur die Karte im richtigen Seitenverhältnis. Unten liegt das Kommando-Deck mit Credits, Strom, Radar, REPARIEREN / VERKAUFEN / MENÜ und den Bauspalten. Die Bedienung funktioniert per Touch und Controller wie oben beschrieben.
 
-CMake will attempt to generate icons in an appropriate format for Windows and macOS if ImageMagick is found in the system PATH. Otherwise you will end up with generic "program" icons.
+**Daten:** Die Originaldateien aus der eigenen *C&C Remastered Collection* (Steam, `Data/CNCDATA/`) gehören in die oben gezeigte Ordnerstruktur unter `/sdcard/Android/data/de.harmssi.thorconquer/files/`. Mit `thor/copy-data.sh` geht das per adb in einem Schritt. Der Launcher zeigt, was fehlt.
 
-## Releases
+**Bauen:** `thor/build.sh` (Docker-Image mit NDK 27.2, SDK 35, Gradle 8.9) erzeugt `dist/ThorConquer.apk`.
 
-Binary releases of the latest commit are available from [here](https://github.com/TheAssemblyArmada/Vanilla-Conquer/releases/tag/latest), which is updated whenever new code is merged into the main branch.
+Die Oberfläche folgt der Systemsprache (Englisch, Deutsch, Spanisch, Französisch). Unter Einstellungen → Sprache lässt sie sich umstellen.
 
-## Running
+## Español
 
-### VanillaTD and VanillaRA
+Thor Conquer lleva C&C Tiberian Dawn y Red Alert de forma nativa a la AYN Thor. La pantalla superior muestra solo el mapa. La inferior es un panel de mando táctil con créditos, energía, radar y construcción. Necesitas tu propia copia de *C&C Remastered Collection* (Steam). Copia los archivos de `Data/CNCDATA/` según la estructura de arriba, por ejemplo con `thor/copy-data.sh`.
 
-Copy the Vanilla executable (`vanillatd.exe` or `vanillara.exe`) to your legacy game directory, on Windows also copy `SDL2.dll` and `OpenAL32.dll`.
+## Français
 
-For Tiberian Dawn the final freeware Gold CD release ([GDI](https://www.moddb.com/games/cc-gold/downloads/command-conquer-gold-free-game-gdi-iso), [NOD](https://www.moddb.com/games/cc-gold/downloads/command-conquer-gold-free-game-nod-iso)) works fine.
-
-For Red Alert the freeware [CD release](https://web.archive.org/web/20080901183216/http://www.ea.com/redalert/news-detail.jsp?id=62) works fine as well.
-The official [Red Alert demo](https://www.moddb.com/games/cc-red-alert/downloads/command-conquer-red-alert-demo) is also fully playable.
-The demo supports custom skirmish maps (except interior) and includes one campaign mission for both Allied and Soviet from the retail game.
-
-While it is possible to use the game data from the Remastered Collection, The Ultimate Collection or The First Decade they are currently _not_ supported.
-Any repackaged version that you may already have from any unofficial source is _not_ supported.
-If you encounter a bug that may be data related like invisible things or crashing when using a certain unit please retest with the retail data first before submitting a bug report.
-
-### Remastered
-
-The build process will produce _Vanilla_TD_ and _Vanilla_RA_ directories in your build directory if you enable them with `-DBUILD_REMASTERTD=ON` and `-DBUILD_REMASTERRA=ON`.
-These work as mods for the Remastered Collection.
-
-To manually install a local Remastered mod, launch both games once then head to _My Documents/CnCRemastered/CnCRemastered/Mods_.
-You should see _Tiberian\_Dawn_ and _Red\_Alert_ directories.
-
-#### Tiberian Dawn
-
-Copy the _Vanilla_TD_ directory to the _Tiberian\_Dawn_ directory.
-
-The directory structure should look like this:
-
-    My Documents/CnCRemastered/CnCRemastered/Mods/Tiberian_Dawn/Vanilla_TD/Data/TiberianDawn.dll
-    My Documents/CnCRemastered/CnCRemastered/Mods/Tiberian_Dawn/Vanilla_TD/ccmod.json
-    My Documents/CnCRemastered/CnCRemastered/Mods/Tiberian_Dawn/Vanilla_TD/GameConstants_Mod.xml
-
-You should now see the new mod in the mods list of Tiberian Dawn Remastered.
-
-#### Red Alert
-
-Copy the _Vanilla_RA_ directory to the _Red\_Alert_ directory.
-
-The directory structure should look like this:
-
-    My Documents/CnCRemastered/CnCRemastered/Mods/Red_Alert/Vanilla_RA/Data/RedAlert.dll
-    My Documents/CnCRemastered/CnCRemastered/Mods/Red_Alert/Vanilla_RA/ccmod.json
-
-You should now see the new mod in the mods list of Red Alert Remastered.
+Thor Conquer apporte C&C Tiberian Dawn et Red Alert en natif sur l'AYN Thor. L'écran du haut affiche uniquement la carte. Celui du bas est un panneau de commandement tactile avec crédits, énergie, radar et construction. Il vous faut votre propre exemplaire de *C&C Remastered Collection* (Steam). Copiez les fichiers de `Data/CNCDATA/` selon l'arborescence ci-dessus, par exemple avec `thor/copy-data.sh`.

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">TERMINAL DE MANDO · EDICIÓN AYN THOR</string>
+
+    <string name="ra_sub">ALIADOS · SOVIÉTICOS · EXPANSIONES</string>
+    <string name="td_sub">GDI · NOD</string>
+    <string name="play">JUGAR</string>
+    <string name="data_ready">DATOS LISTOS</string>
+    <string name="data_missing">FALTAN DATOS</string>
+    <string name="section_files">ARCHIVOS DEL JUEGO</string>
+    <string name="section_content">CONTENIDO</string>
+    <string name="content_hint">La campaña se elige en el menú del juego.</string>
+    <string name="ra_allied">Campaña aliada</string>
+    <string name="ra_soviet">Campaña soviética</string>
+    <string name="td_gdi">Campaña GDI</string>
+    <string name="td_nod">Campaña Nod</string>
+    <string name="td_covert">Operaciones Encubiertas</string>
+    <string name="not_yet">aún no</string>
+
+    <string name="settings">AJUSTES</string>
+    <string name="set_resolution">RESOLUCIÓN</string>
+    <string name="set_screens">PANTALLAS</string>
+    <string name="screens_dual">Dos</string>
+    <string name="screens_single">Una</string>
+    <string name="set_deck">DISEÑO DEL PANEL</string>
+    <string name="deck_large">Grande</string>
+    <string name="deck_compact">Compacto</string>
+    <string name="set_scroll">VELOCIDAD DE DESPLAZAMIENTO</string>
+    <string name="set_cursor">VELOCIDAD DEL CURSOR</string>
+    <string name="slow">Lenta</string>
+    <string name="normal">Normal</string>
+    <string name="fast">Rápida</string>
+    <string name="set_language">IDIOMA</string>
+    <string name="lang_system">Sistema</string>
+
+    <string name="controls_legend">A  ELEGIR    ·    B  VOLVER</string>
+    <string name="data_setup">CONFIGURAR DATOS</string>
+    <string name="about">ACERCA DE</string>
+
+    <string name="sheet_title">Configurar los datos del juego</string>
+    <string name="sheet_intro">Thor Conquer usa los archivos originales de tu propia copia de C&amp;C Remastered Collection (Steam). No incluye ni descarga ningún dato del juego.</string>
+    <string name="sheet_where">COPIA LOS ARCHIVOS EN</string>
+    <string name="sheet_ra_files">RED ALERT · de Data/CNCDATA/RED_ALERT</string>
+    <string name="sheet_ra_layout">Coloca MAIN.MIX de CD1 en allied/ (incluye las campañas aliada y soviética), y MAIN.MIX de COUNTERSTRIKE y AFTERMATH en counterstrike/ y aftermath/.</string>
+    <string name="sheet_td_files">TIBERIAN DAWN · de Data/CNCDATA/TIBERIAN_DAWN</string>
+    <string name="sheet_td_layout">Los archivos de CD1 van directamente en la carpeta. Para jugar ambas campañas, pon GENERAL.MIX y MOVIES.MIX de CD1 en gdi/ y los de CD2 en nod/.</string>
+    <string name="sheet_adb">DESDE UN ORDENADOR (ADB)</string>
+    <string name="sheet_adb_hint">El repositorio incluye thor/copy-data.sh, que copia todo de una vez desde una instalación de Steam en el dispositivo.</string>
+    <string name="sheet_note">No importan las mayúsculas en los nombres de archivo. Al desinstalar la app se borra esta carpeta; al actualizarla, no.</string>
+    <string name="close">CERRAR</string>
+
+    <string name="missing_title">Faltan datos del juego</string>
+    <string name="missing_body">%1$s no puede iniciarse. Faltan estos archivos:\n\n%2$s\n\nCópialos en:\n%3$s</string>
+    <string name="ok">ACEPTAR</string>
+
+    <string name="about_title">Acerca de Thor Conquer</string>
+    <string name="about_body">Thor Conquer es una versión nativa para Android de Vanilla Conquer para la AYN Thor, con un panel de mando en la segunda pantalla.\n\nBasado en Vanilla Conquer (TheAssemblyArmada) y en el fork para Android de sandstranger, ambos construidos sobre el código fuente que Electronic Arts publicó bajo GPL-3.0. Licencia: GPL-3.0.\n\nFuentes: Inter y JetBrains Mono, SIL Open Font License 1.1.\n\nCommand &amp; Conquer, Red Alert y Tiberian Dawn son marcas comerciales de Electronic Arts Inc. Este proyecto no está afiliado ni respaldado por Electronic Arts.</string>
+
+    <string name="deck_credits">CRÉDITOS</string>
+    <string name="deck_power">ENERGÍA</string>
+    <string name="deck_low_power">ENERGÍA BAJA</string>
+    <string name="deck_output_drain">PRODUCCIÓN / CONSUMO</string>
+    <string name="deck_radar">RADAR</string>
+    <string name="deck_online">ACTIVO</string>
+    <string name="deck_offline">INACTIVO</string>
+    <string name="deck_radar_hint">Construye un radar para ver el mapa</string>
+    <string name="deck_repair">REPARAR</string>
+    <string name="deck_sell">VENDER</string>
+    <string name="deck_menu">MENÚ</string>
+    <string name="deck_status">ESTADO</string>
+    <string name="deck_structures">ESTRUCTURAS</string>
+    <string name="deck_units">UNIDADES</string>
+    <string name="deck_ready">LISTO</string>
+    <string name="deck_on_hold">EN ESPERA</string>
+    <string name="deck_mode_place">COLOCAR</string>
+    <string name="deck_mode_target">ELEGIR OBJETIVO</string>
+    <string name="deck_mode_repair">MODO REPARAR</string>
+    <string name="deck_mode_sell">MODO VENDER</string>
+    <string name="deck_side_allies">ALIADOS</string>
+    <string name="deck_side_soviet">SOVIÉTICOS</string>
+    <string name="deck_side_gdi">GDI</string>
+    <string name="deck_side_nod">NOD</string>
+    <string name="deck_h_place">Colocar estructura</string>
+    <string name="deck_d_place">Toca el mapa en la pantalla superior. Mantén pulsado allí para cancelar.</string>
+    <string name="deck_h_target">Elegir objetivo</string>
+    <string name="deck_d_target">Toca el objetivo en la pantalla superior.</string>
+    <string name="deck_h_repair">Modo reparar</string>
+    <string name="deck_d_repair">Toca una estructura en la pantalla superior. Vuelve a tocar REPARAR para salir.</string>
+    <string name="deck_h_sell">Modo vender</string>
+    <string name="deck_d_sell">Toca una estructura en la pantalla superior. Vuelve a tocar VENDER para salir.</string>
+    <string name="deck_h_ready">Esperando órdenes</string>
+    <string name="deck_d_ready">Toca para construir · toca LISTO para desplegar · mantén pulsado para pausar o cancelar.</string>
+    <string name="deck_d_action">Vuelve a tocar para pausar · mantén pulsado para pausar o cancelar.</string>
+    <string name="deck_act_hold">%1$s · pausar / cancelar</string>
+    <string name="deck_act_deploy">%1$s · desplegar</string>
+    <string name="deck_standby">PANEL DE MANDO · EN ESPERA</string>
+    <string name="deck_standby_hint">La barra de construcción y el radar aparecen aquí en cuanto empieza una misión.</string>
+    <string name="set_videos">VÍDEOS</string>
+    <string name="videos_play">Reproducir</string>
+    <string name="videos_skip">Omitir</string>
+    <string name="set_demo">MODO DEMO (GRABACIÓN)</string>
+    <string name="set_highlights">RESALTAR TOQUES</string>
+    <string name="off">No</string>
+    <string name="on">Sí</string>
+    <string name="deck_autopilot">PILOTO AUTO</string>
+    <string name="deck_no_signal">SIN SEÑAL</string>
+    <string name="deck_h_autopilot">Piloto automático</string>
+    <string name="deck_d_autopilot">Juega la IA. Toca PILOTO AUTO arriba para tomar el mando.</string>
+</resources>

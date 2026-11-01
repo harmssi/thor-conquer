@@ -60,6 +60,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include "common/thor.h"
 #include "msgbox.h"
 #include "textbtn.h"
 #include "factory.h"
@@ -1362,6 +1363,9 @@ void Do_Restart(void)
  *=============================================================================================*/
 bool Restate_Mission(char const* name, int button1, int button2)
 {
+#ifdef THOR_ENABLED
+    ThorMenuView thor_menu_view; // dialogs are laid out for 640x400
+#endif
     if (name) {
 
         bool brief = true;

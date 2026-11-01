@@ -131,6 +131,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include "common/thor.h"
 #include "vortex.h"
 #include "rules.h"
 #include "utracker.h"
@@ -3904,7 +3905,11 @@ void HouseClass::MPlayer_Defeated(void)
     for (i = 0; i < Session.MaxPlayers; i++) {
         hptr = HouseClass::As_Pointer((HousesType)(HOUSE_MULTI1 + i));
         if (hptr && !hptr->IsDefeated) {
-            if (hptr->IsHuman) {
+            if (hptr->IsHuman
+#ifdef THOR_ENABLED
+                || (Thor_Demo().Enabled && hptr == PlayerPtr) // demo: AI plays for the player
+#endif
+            ) {
                 num_humans++;
             }
             num_alive++;

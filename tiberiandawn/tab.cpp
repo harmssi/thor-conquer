@@ -37,6 +37,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include "common/thor.h"
 
 void const* TabClass::TabShape = NULL;
 
@@ -83,6 +84,12 @@ void TabClass::Draw_It(bool complete)
 
     SidebarClass::Draw_It(complete);
 
+#ifdef THOR_ENABLED
+    /* Dual screen: credits and the menu button live on the deck, no tab bar on top. */
+    if (Thor_Dual_Screen()) {
+        return;
+    }
+#endif
     if (Debug_Map) {
         // HidPage.Unlock();
         return;
@@ -185,6 +192,12 @@ void TabClass::Hilite_Tab(int tab)
  *=============================================================================================*/
 void TabClass::AI(KeyNumType& input, int x, int y)
 {
+#ifdef THOR_ENABLED
+    if (Thor_Dual_Screen()) {
+        SidebarClass::AI(input, x, y);
+        return;
+    }
+#endif
     if (y >= 0 && y < Tab_Height && x < (SeenBuff.Get_Width() - 1) && x > 0) {
 
         bool ok = false;

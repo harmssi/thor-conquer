@@ -1,4 +1,5 @@
 set(TIBDAWN_SRC
+    thor_game.cpp
     aadata.cpp
     abstract.cpp
     adata.cpp

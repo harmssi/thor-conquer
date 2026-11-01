@@ -13,6 +13,17 @@ public:
     virtual bool Is_Analog_Scroll_Active();
     virtual unsigned char Get_Scroll_Direction();
     virtual KeyASCIIType To_ASCII(unsigned short key);
+#if ANDROID
+    /* Thor: Touch-Gesten und Befehle vom unteren Bildschirm in die normale Eingabewarteschlange. */
+    void Thor_Mouse(unsigned short key, int x, int y, bool release)
+    {
+        Put_Mouse_Message(key, x, y, release);
+    }
+    void Thor_Key(unsigned short key, bool release)
+    {
+        Put_Key_Message(key, release);
+    }
+#endif
 
 private:
     void Handle_Controller_Axis_Event(const SDL_ControllerAxisEvent& motion);

@@ -57,6 +57,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include "common/thor.h"
 #include "language.h"
 #include "msgbox.h"
 #include "loaddlg.h"
@@ -430,6 +431,11 @@ bool Init_Game(int, char*[])
  *=============================================================================================*/
 bool Select_Game(bool fade)
 {
+#ifdef THOR_ENABLED
+    if (Thor_Big_View()) {
+        Thor_Game_Set_View(false); // main menu: centred 640x400 frame
+    }
+#endif
     //	Enums in Select_Game() must match order of buttons in Main_Menu().
 #ifdef FIXIT_VERSION_3
     enum

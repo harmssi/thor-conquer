@@ -579,7 +579,9 @@ bool Send_Remote_File(char* file_name, int gametype)
 #ifdef FIXIT_VERSION_3
     //	If we're sending an official map, always send it to 'download.tmp'.
     if (Is_Mission_Counterstrike(file_name) || Is_Mission_Aftermath(file_name)) {
-        strcpy(&net_file_info.ScenarioInfo.ShortFileName[0], "DOWNLOAD.TMP");
+        // Thor: "DOWNLOAD.TMP" + NUL passt nicht in ShortFileName[12]; Bionic-FORTIFY bricht
+        // den Build ab. Netzwerkformat bleibt unveraendert, daher nur die 12 Zeichen kopieren.
+        memcpy(&net_file_info.ScenarioInfo.ShortFileName[0], "DOWNLOAD.TMP", sizeof(net_file_info.ScenarioInfo.ShortFileName));
     }
 #else
 #ifdef FIXIT_CSII //	checked - ajw 9/28/98

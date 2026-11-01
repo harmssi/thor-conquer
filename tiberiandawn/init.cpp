@@ -41,6 +41,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include "common/thor.h"
 #include "loaddlg.h"
 #include "common/gitinfo.h"
 #include "common/vqaconfig.h"
@@ -700,6 +701,11 @@ extern int Com_Show_Fake_Scenario_Dialog(void);
 
 bool Select_Game(bool fade)
 {
+#ifdef THOR_ENABLED
+    if (Thor_Big_View()) {
+        Thor_Game_Set_View(false); // main menu: centred 640x400 frame
+    }
+#endif
     enum
     {
         SEL_TIMEOUT = -1, // main menu timeout--go into attract mode

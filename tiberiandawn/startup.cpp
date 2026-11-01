@@ -35,6 +35,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include "common/thor.h"
 #include "common/ini.h"
 #include "common/paths.h"
 #include "common/utfargs.h"
@@ -53,6 +54,7 @@ HINSTANCE ProgramInstance;
 #endif
 #if ANDROID
 #include "SDL_main.h"
+#include "SDL.h"
 #include <string>
 
 using namespace std;
@@ -239,6 +241,19 @@ int main(int argc, char** argv)
     */
     Paths.Init("vanillatd", "CONQUER.INI", "CONQUER.MIX", args.ArgV[0]);
     CDFileClass::Refresh_Search_Drives();
+#if ANDROID
+    /*
+    ** Thor: Ohne Spieldaten stuerzt die Engine spaeter in Init_Game ab (fehlende Palette).
+    ** Stattdessen hier sauber mit einer Meldung abbrechen.
+    */
+    if (!RawFileClass("CONQUER.MIX").Is_Available()) {
+        std::string msg = "Spieldaten fehlen: CONQUER.MIX nicht gefunden in\n" + g_pathToResources
+                          + "\n\nBitte die MIX-Dateien dorthin kopieren (siehe README).";
+        DBG_ERROR("%s", msg.c_str());
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Tiberian Dawn - Spieldaten fehlen", msg.c_str(), nullptr);
+        return EXIT_FAILURE;
+    }
+#endif
 
     if (Parse_Command_Line(args.ArgC, args.ArgV)) {
 
@@ -308,6 +323,12 @@ int main(int argc, char** argv)
         if (Settings.Video.DOSMode || Is_Demo() || Is_DOS_Files()) {
             ScreenWidth = 320;
             ScreenHeight = 200;
+        }
+#endif
+#ifdef THOR_ENABLED
+        if (Thor_Big_View() && ScreenWidth == 640) {
+            ScreenWidth = 960;
+            ScreenHeight = 540;
         }
 #endif
 
@@ -412,8 +433,16 @@ int main(int argc, char** argv)
         }
 #endif
 
+#ifdef THOR_ENABLED
+        SeenBuff.Attach(&VisiblePage, 0, 0, ScreenWidth, ScreenHeight);
+        HidPage.Attach(&HiddenPage, 0, 0, ScreenWidth, ScreenHeight);
+        if (ScreenWidth == 960) {
+            Thor_Game_Set_View(false); // menus: centred 640x400 frame
+        }
+#else
         SeenBuff.Attach(&VisiblePage, 0, 0, GBUFF_INIT_WIDTH, GBUFF_INIT_HEIGHT);
         HidPage.Attach(&HiddenPage, 0, 0, GBUFF_INIT_WIDTH, GBUFF_INIT_HEIGHT);
+#endif
 
         CCDebugString("C&C95 - Adjusting variables for resolution.\n");
         Options.Adjust_Variables_For_Resolution();

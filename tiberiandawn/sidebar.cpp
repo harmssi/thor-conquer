@@ -75,6 +75,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include "common/thor.h"
 #include "settings.h"
 
 /*
@@ -866,7 +867,13 @@ void SidebarClass::AI(KeyNumType& input, int x, int y)
     /*
     **	Toggle the sidebar in and out with the <TAB> key.
     */
-    if (input == KN_TAB) {
+#ifdef THOR_ENABLED
+    /* Thor: Bauleiste/Radar laufen auf dem unteren Bildschirm, oben nur die Karte. */
+    if (Thor_Dual_Screen()) {
+        Activate(0);
+    } else
+#endif
+        if (input == KN_TAB) {
         Activate(-1);
     }
 
@@ -1069,7 +1076,17 @@ bool SidebarClass::Activate(int control)
             Add_A_Button(Map.PowerButton);
         } else {
             Help_Text(TXT_NONE);
-            Set_View_Dimensions(0, Map.Get_Tab_Height());
+#ifdef THOR_ENABLED
+            if (Thor_Dual_Screen()) {
+                if (Thor_Big_View() && Thor_View_State() == 1) {
+                    Thor_Note_View_State(-1);
+                    Thor_Game_Set_View(true);
+                } else {
+                    Set_View_Dimensions(0, 0);
+                }
+            } else
+#endif
+                Set_View_Dimensions(0, Map.Get_Tab_Height());
             Remove_A_Button(*Repair);
             Remove_A_Button(*Upgrade);
             Remove_A_Button(*Zoom);
@@ -2208,9 +2225,18 @@ void SidebarClass::StripClass::SelectClass::Set_Owner(StripClass& strip, int ind
  * HISTORY:                                                                                    *
  *   01/19/1995 JLB : Created.                                                                 *
  *=============================================================================================*/
+#if ANDROID
+int SidebarClass::StripClass::SelectClass::ThorIndexOverride = -1;
+#endif
+
 int SidebarClass::StripClass::SelectClass::Action(unsigned flags, KeyNumType& key)
 {
+#if ANDROID
+    /* Thor: Klick vom unteren Bildschirm - gleicher Pfad wie ein Klick auf die Sidebar. */
+    int index = ThorIndexOverride >= 0 ? ThorIndexOverride : Strip->TopIndex + Index;
+#else
     int index = Strip->TopIndex + Index;
+#endif
     RTTIType otype = Strip->Buildables[index].BuildableType;
     int oid = Strip->Buildables[index].BuildableID;
     int fnumber = Strip->Buildables[index].Factory;

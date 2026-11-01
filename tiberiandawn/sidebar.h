@@ -45,6 +45,9 @@ class InitClass
 
 class SidebarClass : public PowerClass
 {
+#if ANDROID
+    friend struct ThorAccess;
+#endif
 public:
     /*
     **	These constants are used to control the sidebar rendering. They are instantiated
@@ -151,6 +154,9 @@ public:
     */
     class StripClass : public StageClass
     {
+#if ANDROID
+        friend struct ThorAccess;
+#endif
         class SelectClass : public ControlClass
         {
         public:
@@ -159,6 +165,12 @@ public:
             void Set_Owner(StripClass& strip, int index);
             StripClass* Strip;
             int Index;
+
+#if ANDROID
+            /* Thor: Index-Vorgabe fuer Klicks vom unteren Bildschirm (-1 = normaler Klick). */
+            static int ThorIndexOverride;
+            friend struct ThorAccess;
+#endif
 
         protected:
             virtual int Action(unsigned flags, KeyNumType& key);

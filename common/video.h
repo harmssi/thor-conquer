@@ -65,6 +65,12 @@ void Get_Video_Scale(float& x, float& y);
 void Set_Video_Cursor_Clip(bool clipped);
 void Move_Video_Mouse(float xrel, float yrel);
 void Get_Video_Mouse(int& x, int& y);
+#if ANDROID
+void Video_Window_To_Game(float wx, float wy, float& gx, float& gy);
+void Video_Touch_To_Game(float nx, float ny, float& gx, float& gy);
+void Set_Video_Mouse(float gx, float gy);
+void Video_Set_View(int x, int y, int w, int h, bool integer_scale);
+#endif
 void Toggle_Video_Fullscreen();
 void Reset_Video_Mode();
 unsigned Get_Free_Video_Memory();

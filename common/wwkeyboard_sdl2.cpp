@@ -22,7 +22,187 @@
 #include <SDL.h>
 
 #if ANDROID
+#include "thor.h"
 static bool touchIsActive = false;
+
+/*
+** Thor: Touch-Gesten fuer den oberen Bildschirm.
+**   Tippen                 = Linksklick
+**   Ziehen (ein Finger)    = Linke Taste halten (Auswahlrahmen)
+**   Langes Druecken        = Rechtsklick (abwaehlen/abbrechen)
+**   Zwei Finger ziehen     = Karte scrollen
+**   Zwei Finger tippen     = Rechtsklick
+*/
+namespace
+{
+    enum TouchMode
+    {
+        TOUCH_IDLE,
+        TOUCH_PENDING,
+        TOUCH_DRAG,
+        TOUCH_LONG_DONE,
+        TOUCH_MULTI
+    };
+
+    struct Finger
+    {
+        SDL_FingerID id;
+        float x; // normiert 0..1
+        float y;
+    };
+
+    const int TOUCH_MAX_FINGERS = 5;
+    const uint32_t TOUCH_LONG_PRESS_MS = 450;
+    const uint32_t TOUCH_TWO_TAP_MS = 350;
+    const float TOUCH_DRAG_THRESHOLD = 0.012f; // Anteil der Fensterbreite
+
+    struct TouchState
+    {
+        TouchMode Mode = TOUCH_IDLE;
+        Finger Fingers[TOUCH_MAX_FINGERS];
+        int Count = 0;
+        float StartX = 0; // normiert
+        float StartY = 0;
+        uint32_t DownTicks = 0;
+        float CentroidX = 0; // Spielpixel
+        float CentroidY = 0;
+        float MultiMoved = 0;
+    } Touch;
+
+    int Touch_Find(SDL_FingerID id)
+    {
+        for (int i = 0; i < Touch.Count; i++) {
+            if (Touch.Fingers[i].id == id) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    void Touch_Centroid(float& gx, float& gy)
+    {
+        float nx = 0, ny = 0;
+        for (int i = 0; i < Touch.Count; i++) {
+            nx += Touch.Fingers[i].x;
+            ny += Touch.Fingers[i].y;
+        }
+        if (Touch.Count > 0) {
+            nx /= Touch.Count;
+            ny /= Touch.Count;
+        }
+        Video_Touch_To_Game(nx, ny, gx, gy);
+    }
+} // namespace
+
+static void Touch_Click(WWKeyboardClassSDL2* kb, unsigned short key)
+{
+    int x, y;
+    Get_Video_Mouse(x, y);
+    kb->Thor_Mouse(key, x, y, false);
+    kb->Thor_Mouse(key, x, y, true);
+}
+
+static void Touch_Event(WWKeyboardClassSDL2* kb, const SDL_TouchFingerEvent& f, Uint32 type)
+{
+    touchIsActive = true;
+    float gx, gy;
+
+    switch (type) {
+    case SDL_FINGERDOWN: {
+        if (Touch.Count < TOUCH_MAX_FINGERS && Touch_Find(f.fingerId) < 0) {
+            Touch.Fingers[Touch.Count++] = Finger{f.fingerId, f.x, f.y};
+        }
+        if (Touch.Count == 1) {
+            Touch.Mode = TOUCH_PENDING;
+            Touch.StartX = f.x;
+            Touch.StartY = f.y;
+            Touch.DownTicks = SDL_GetTicks();
+            Video_Touch_To_Game(f.x, f.y, gx, gy);
+            Set_Video_Mouse(gx, gy);
+        } else if (Touch.Mode == TOUCH_PENDING || Touch.Mode == TOUCH_DRAG) {
+            if (Touch.Mode == TOUCH_DRAG) {
+                int x, y;
+                Get_Video_Mouse(x, y);
+                kb->Thor_Mouse(VK_LBUTTON, x, y, true);
+            }
+            Touch.Mode = TOUCH_MULTI;
+            Touch.MultiMoved = 0;
+            Touch_Centroid(Touch.CentroidX, Touch.CentroidY);
+        } else if (Touch.Mode == TOUCH_MULTI) {
+            Touch_Centroid(Touch.CentroidX, Touch.CentroidY);
+        }
+    } break;
+
+    case SDL_FINGERMOTION: {
+        int i = Touch_Find(f.fingerId);
+        if (i < 0) {
+            break;
+        }
+        Touch.Fingers[i].x = f.x;
+        Touch.Fingers[i].y = f.y;
+
+        if (Touch.Mode == TOUCH_PENDING) {
+            float dx = f.x - Touch.StartX;
+            float dy = (f.y - Touch.StartY) * 9.0f / 16.0f;
+            if (std::sqrt(dx * dx + dy * dy) > TOUCH_DRAG_THRESHOLD) {
+                /* Ziehen beginnt: linke Taste am Startpunkt druecken. */
+                Video_Touch_To_Game(Touch.StartX, Touch.StartY, gx, gy);
+                Set_Video_Mouse(gx, gy);
+                kb->Thor_Mouse(VK_LBUTTON, (int)gx, (int)gy, false);
+                Touch.Mode = TOUCH_DRAG;
+            }
+        }
+        if (Touch.Mode == TOUCH_DRAG) {
+            Video_Touch_To_Game(f.x, f.y, gx, gy);
+            Set_Video_Mouse(gx, gy);
+        } else if (Touch.Mode == TOUCH_MULTI) {
+            Touch_Centroid(gx, gy);
+            float dx = gx - Touch.CentroidX;
+            float dy = gy - Touch.CentroidY;
+            Touch.CentroidX = gx;
+            Touch.CentroidY = gy;
+            Touch.MultiMoved += std::fabs(dx) + std::fabs(dy);
+            Thor_Touch_Scroll(dx, dy);
+        }
+    } break;
+
+    case SDL_FINGERUP: {
+        int i = Touch_Find(f.fingerId);
+        if (i >= 0) {
+            Touch.Fingers[i] = Touch.Fingers[--Touch.Count];
+        }
+        if (Touch.Mode == TOUCH_PENDING) {
+            Touch_Click(kb, VK_LBUTTON);
+            Touch.Mode = TOUCH_IDLE;
+        } else if (Touch.Mode == TOUCH_DRAG) {
+            Video_Touch_To_Game(f.x, f.y, gx, gy);
+            Set_Video_Mouse(gx, gy);
+            kb->Thor_Mouse(VK_LBUTTON, (int)gx, (int)gy, true);
+            Touch.Mode = TOUCH_IDLE;
+        } else if (Touch.Mode == TOUCH_MULTI) {
+            if (Touch.Count == 0) {
+                if (Touch.MultiMoved < 6.0f && SDL_GetTicks() - Touch.DownTicks < TOUCH_TWO_TAP_MS + 300) {
+                    Touch_Click(kb, VK_RBUTTON);
+                }
+                Touch.Mode = TOUCH_IDLE;
+            } else {
+                Touch_Centroid(Touch.CentroidX, Touch.CentroidY);
+            }
+        }
+        if (Touch.Count == 0) {
+            Touch.Mode = TOUCH_IDLE;
+        }
+    } break;
+    }
+}
+
+static void Touch_Update(WWKeyboardClassSDL2* kb)
+{
+    if (Touch.Mode == TOUCH_PENDING && Touch.Count == 1 && SDL_GetTicks() - Touch.DownTicks >= TOUCH_LONG_PRESS_MS) {
+        Touch_Click(kb, VK_RBUTTON);
+        Touch.Mode = TOUCH_LONG_DONE;
+    }
+}
 #endif
 
 void Focus_Loss();
@@ -59,9 +239,24 @@ void WWKeyboardClassSDL2::Fill_Buffer_From_System(void)
         case SDL_MOUSEMOTION:
 #if ANDROID
             touchIsActive = event.motion.which == SDL_TOUCH_MOUSEID;
-#endif
+            if (Settings.Mouse.RawInput) {
+                Move_Video_Mouse(static_cast<float>(event.motion.xrel), static_cast<float>(event.motion.yrel));
+            } else {
+                float gx, gy;
+                Video_Window_To_Game((float)event.motion.x, (float)event.motion.y, gx, gy);
+                Set_Video_Mouse(gx, gy);
+            }
+#else
             Move_Video_Mouse(static_cast<float>(event.motion.xrel), static_cast<float>(event.motion.yrel));
+#endif
             break;
+#if ANDROID
+        case SDL_FINGERDOWN:
+        case SDL_FINGERMOTION:
+        case SDL_FINGERUP:
+            Touch_Event(this, event.tfinger, event.type);
+            break;
+#endif
         case SDL_MOUSEBUTTONDOWN:
         case SDL_MOUSEBUTTONUP: {
             int x, y;
@@ -87,10 +282,18 @@ void WWKeyboardClassSDL2::Fill_Buffer_From_System(void)
 #endif
                 Get_Video_Mouse(x, y);
             } else {
+#if ANDROID
+                float gx, gy;
+                Video_Window_To_Game((float)event.button.x, (float)event.button.y, gx, gy);
+                Set_Video_Mouse(gx, gy);
+                x = (int)gx;
+                y = (int)gy;
+#else
                 float scale_x = 1.0f, scale_y = 1.0f;
                 Get_Video_Scale(scale_x, scale_y);
                 x = event.button.x / scale_x;
                 y = event.button.y / scale_y;
+#endif
             }
 
             Put_Mouse_Message(key, x, y, event.type == SDL_MOUSEBUTTONDOWN ? false : true);
@@ -171,7 +374,27 @@ void WWKeyboardClassSDL2::Fill_Buffer_From_System(void)
     if (Is_Gamepad_Active()) {
         Process_Controller_Axis_Motion();
     }
+#if ANDROID
+    Touch_Update(this);
+    Thor_Input_Tick();
+#endif
 }
+
+#if ANDROID
+extern WWKeyboardClass* Keyboard;
+
+void Thor_Inject_Click(int x, int y, bool right)
+{
+    if (!Keyboard) {
+        return;
+    }
+    WWKeyboardClassSDL2* kb = (WWKeyboardClassSDL2*)Keyboard;
+    Set_Video_Mouse((float)x, (float)y);
+    unsigned short key = right ? VK_RBUTTON : VK_LBUTTON;
+    kb->Thor_Mouse(key, x, y, false);
+    kb->Thor_Mouse(key, x, y, true);
+}
+#endif
 
 #ifdef ANDROID
 extern void SetMute(bool mute);

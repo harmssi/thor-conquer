@@ -45,6 +45,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include "common/thor.h"
 #include "textblit.h"
 #include "common/irandom.h"
 #include "common/framelimit.h"
@@ -582,6 +583,9 @@ void Enable_Uncompressed_Shapes(void);
  *=============================================================================================*/
 void ScoreClass::Presentation(void)
 {
+#ifdef THOR_ENABLED
+    ThorMenuView thor_menu_view; // centred 640x400 frame on the 960x540 screen
+#endif
     // static char const _redpal[]={0x20,0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28,0x29,0x2A,0x2B,0x2C,0x2D,0x21,0x2F};
     static char const _redpal[] = {
         0x20, 0x22, 0x24, 0x26, 0x28, 0x28, 0x28, 0x28, 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D, 0x21, 0x2F};

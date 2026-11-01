@@ -45,6 +45,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include "common/thor.h"
 #include "interpal.h"
 #include "common/framelimit.h"
 #include "common/wsa.h"
@@ -332,6 +333,9 @@ static unsigned char const _yellowpal[] =
     {0x0, 0x0, 0xEC, 0x0, 0xEB, 0x0, 0xEA, 0x0, 0xE9, 0x0, 0x0, 0x0, 0x0, 0x0, 0xED, 0x0};
 void ScoreClass::Presentation(void)
 {
+#ifdef THOR_ENABLED
+    ThorMenuView thor_menu_view; // centred 640x400 frame on the 960x540 screen
+#endif
 #ifndef REMASTER_BUILD
     static int const _casuax[2] = {144, 150};
     static int const _casuay[2] = {78, 78};

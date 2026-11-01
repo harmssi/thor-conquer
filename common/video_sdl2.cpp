@@ -40,6 +40,7 @@
 #include "gbuffer.h"
 #include "palette.h"
 #include "video.h"
+#include "thor.h"
 #include "wwkeyboard.h"
 #include "wwmouse.h"
 #include "settings.h"
@@ -62,6 +63,11 @@ static SDL_Renderer* renderer;
 static SDL_Palette* palette;
 static Uint32 pixel_format;
 static SDL_Rect render_dst;
+#if ANDROID
+/* Thor: part of the game surface that is shown (menus: centred 640x400 inside 960x540). */
+static SDL_Rect view_src = {0, 0, 0, 0};
+static bool view_integer = false;
+#endif
 
 static struct
 {
@@ -191,10 +197,38 @@ void Update_HWCursor_Settings()
         render_dst.x = (win_w - render_dst.w) / 2;
         render_dst.y = (win_h - render_dst.h) / 2;
     } else {
+#if ANDROID
+        /*
+        ** Thor: Bild nie verzerren. 640x400 (16:10) wird auf 1920x1080 mit seitlichen Balken
+        ** dargestellt (1728x1080).
+        */
+        render_dst.w = win_w;
+        render_dst.h = (int)(win_w / ar);
+        if (render_dst.h > win_h) {
+            render_dst.h = win_h;
+            render_dst.w = (int)(win_h * ar);
+        }
+        if (view_integer) {
+            /* Pixel-perfect: largest integer factor that fits (960x540 -> 2x, 640x400 -> 2x). */
+            int k = win_w / hwcursor.GameW;
+            if (win_h / hwcursor.GameH < k) {
+                k = win_h / hwcursor.GameH;
+            }
+            if (k >= 1) {
+                render_dst.w = hwcursor.GameW * k;
+                render_dst.h = hwcursor.GameH * k;
+            }
+        }
+        render_dst.x = (win_w - render_dst.w) / 2;
+        render_dst.y = (win_h - render_dst.h) / 2;
+        hwcursor.ScaleX = render_dst.w / (float)hwcursor.GameW;
+        hwcursor.ScaleY = render_dst.h / (float)hwcursor.GameH;
+#else
         render_dst.w = win_w;
         render_dst.h = win_h;
         render_dst.x = 0;
         render_dst.y = 0;
+#endif
     }
 
     /*
@@ -401,6 +435,9 @@ bool Set_Video_Mode(int w, int h, int bits_per_pixel)
     ** Set mouse scaling options.
     */
     hwcursor.GameW = w;
+#if ANDROID
+    view_src = {0, 0, w, h};
+#endif
     hwcursor.GameH = h;
     hwcursor.X = w / 2;
     hwcursor.Y = h / 2;
@@ -516,7 +553,11 @@ void Set_Video_Cursor_Clip(bool clipped)
 
 void Move_Video_Mouse(float xrel, float yrel)
 {
+#if ANDROID
+    if (true) {
+#else
     if (Keyboard->Is_Gamepad_Active() || hwcursor.Clip || !Settings.Video.Windowed) {
+#endif
         hwcursor.X += xrel * (Settings.Mouse.Sensitivity / 100.0f);
         hwcursor.Y += yrel * (Settings.Mouse.Sensitivity / 100.0f);
     }
@@ -534,8 +575,83 @@ void Move_Video_Mouse(float xrel, float yrel)
     }
 }
 
+#if ANDROID
+/*
+** Thor: Fensterkoordinaten (Pixel) in Spielkoordinaten umrechnen, inkl. Seitenbalken.
+*/
+void Video_Window_To_Game(float wx, float wy, float& gx, float& gy)
+{
+    gx = (wx - render_dst.x) / hwcursor.ScaleX;
+    gy = (wy - render_dst.y) / hwcursor.ScaleY;
+    if (gx < 0) {
+        gx = 0;
+    } else if (gx > hwcursor.GameW - 1) {
+        gx = hwcursor.GameW - 1;
+    }
+    if (gy < 0) {
+        gy = 0;
+    } else if (gy > hwcursor.GameH - 1) {
+        gy = hwcursor.GameH - 1;
+    }
+}
+
+/* Normierte Touch-Koordinaten (0..1 des Fensters) -> Spielkoordinaten. */
+void Video_Touch_To_Game(float nx, float ny, float& gx, float& gy)
+{
+    int win_w = 1, win_h = 1;
+    if (renderer) {
+        SDL_GetRendererOutputSize(renderer, &win_w, &win_h);
+    }
+    Video_Window_To_Game(nx * win_w, ny * win_h, gx, gy);
+}
+
+void Video_Set_View(int x, int y, int w, int h, bool integer_scale)
+{
+    view_src = {x, y, w, h};
+    view_integer = integer_scale;
+    hwcursor.GameW = w;
+    hwcursor.GameH = h;
+    if (hwcursor.X >= w) {
+        hwcursor.X = w - 1;
+    }
+    if (hwcursor.Y >= h) {
+        hwcursor.Y = h - 1;
+    }
+    if (renderer) {
+        SDL_RenderClear(renderer);
+        Update_HWCursor_Settings();
+    }
+}
+
+void Set_Video_Mouse(float gx, float gy)
+{
+    hwcursor.X = gx;
+    hwcursor.Y = gy;
+}
+
+void Thor_Get_Palette(uint32_t* argb256)
+{
+    for (int i = 0; i < 256; i++) {
+        if (palette) {
+            SDL_Color c = palette->colors[i];
+            argb256[i] = 0xFF000000u | (c.r << 16) | (c.g << 8) | c.b;
+        } else {
+            argb256[i] = 0xFF000000u;
+        }
+    }
+}
+#endif
+
 void Get_Video_Mouse(int& x, int& y)
 {
+#if ANDROID
+    /*
+    ** Thor: Touch, Maus und Controller bewegen alle den Software-Cursor (hwcursor.X/Y).
+    */
+    x = hwcursor.X;
+    y = hwcursor.Y;
+    return;
+#endif
     if (Keyboard->Is_Gamepad_Active() || (Settings.Mouse.RawInput && (hwcursor.Clip || !Settings.Video.Windowed))) {
         x = hwcursor.X;
         y = hwcursor.Y;
@@ -920,6 +1036,10 @@ public:
 
             dst.x = x - hwcursor.HotX;
             dst.y = y - hwcursor.HotY;
+#if ANDROID
+            dst.x += view_src.x;
+            dst.y += view_src.y;
+#endif
             dst.w = hwcursor.Surface->w;
             dst.h = hwcursor.Surface->h;
 
@@ -928,7 +1048,11 @@ public:
 
         SDL_UpdateTexture(texture, NULL, windowSurface->pixels, windowSurface->pitch);
         SDL_RenderClear(renderer);
+#if ANDROID
+        SDL_RenderCopy(renderer, texture, view_src.w > 0 ? &view_src : NULL, &render_dst);
+#else
         SDL_RenderCopy(renderer, texture, NULL, &render_dst);
+#endif
         SDL_RenderPresent(renderer);
     }
 

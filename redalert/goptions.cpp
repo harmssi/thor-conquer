@@ -34,6 +34,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include "common/thor.h"
 #include "msgbox.h"
 
 #include "goptions.h"
@@ -68,6 +69,9 @@ bool RedrawOptionsMenu;
  *=============================================================================================*/
 void GameOptionsClass::Process(void)
 {
+#ifdef THOR_ENABLED
+    ThorMenuView thor_menu_view; // dialogs are laid out for 640x400
+#endif
     static struct
     {
         int ID;         // Button ID to use.
