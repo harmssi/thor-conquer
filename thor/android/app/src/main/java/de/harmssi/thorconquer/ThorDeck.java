@@ -32,6 +32,7 @@ public class ThorDeck extends View {
     static final int FL_RADAR = 1, FL_REPAIR = 2, FL_SELL = 4, FL_PLACING = 8, FL_TARGETING = 16, FL_REPAIR_OK = 32,
             FL_AUTOPILOT = 64;
     static final int CMD_TAKE_CONTROL = 7;
+    static final int CMD_JUMP = 8;
     static final int SDL_SCANCODE_ESCAPE = 41;
     static final int BASE = 2;     // age + serial before the layout
     static final int HEADER = 20;  // THOR_HEADER_INTS
@@ -78,6 +79,8 @@ public class ThorDeck extends View {
     private final RectF header = new RectF();
     private final RectF radarPanel = new RectF(), radarArea = new RectF();
     private final RectF btnRepair = new RectF(), btnSell = new RectF(), btnMenu = new RectF();
+    private final RectF btnUnits = new RectF(), btnBase = new RectF();
+    private boolean buttonLongFired;
     private final RectF statusPanel = new RectF();
     private final RectF chipRect = new RectF();
     // Controller focus (L1/R1 move, A builds); the ring fades out after a few seconds.
@@ -107,6 +110,19 @@ public class ThorDeck extends View {
             if (downItem != null && !scrolled) {
                 longFired = true;
                 click(downItem, true); // hold / cancel
+            }
+        }
+    };
+
+    private final Runnable buttonLongPress = new Runnable() {
+        @Override
+        public void run() {
+            if (downButton == btnUnits) {
+                buttonLongFired = true;
+                NativeBridge.pushCommand(CMD_JUMP, 2, 0, 0); // select own units on screen
+                flashButton = btnUnits;
+                flashAt = SystemClock.uptimeMillis();
+                invalidate();
             }
         }
     };
@@ -291,7 +307,10 @@ public class ThorDeck extends View {
         btnRepair.set(m, by, m + bw, by + bh);
         btnSell.set(btnRepair.right + gap, by, btnRepair.right + gap + bw, by + bh);
         btnMenu.set(btnSell.right + gap, by, m + leftW, by + bh);
-        statusPanel.set(m, btnRepair.bottom + 20 * s, m + leftW, h - m);
+        float by2 = btnRepair.bottom + gap, bw2 = (leftW - gap) / 2f;
+        btnUnits.set(m, by2, m + bw2, by2 + bh);
+        btnBase.set(btnUnits.right + gap, by2, m + leftW, by2 + bh);
+        statusPanel.set(m, btnUnits.bottom + 20 * s, m + leftW, h - m);
         float colX = radarPanel.right + 24 * s;
         float colW = (w - m - colX - 16 * s) / 2f;
         for (int i = 0; i < 2; i++) {
@@ -328,6 +347,8 @@ public class ThorDeck extends View {
         drawButton(c, btnRepair, str(R.string.deck_repair), (flags & FL_REPAIR) != 0, (flags & FL_REPAIR_OK) != 0, glyphWrench());
         drawButton(c, btnSell, str(R.string.deck_sell), (flags & FL_SELL) != 0, true, glyphDollar());
         drawButton(c, btnMenu, str(R.string.deck_menu), false, true, glyphMenu());
+        drawButton(c, btnUnits, str(R.string.deck_btn_units), false, true, glyphUnits());
+        drawButton(c, btnBase, str(R.string.deck_btn_base), false, true, glyphBase());
         drawStatus(c);
         for (int col = 0; col < 2; col++) {
             drawColumn(c, col);
@@ -531,6 +552,36 @@ public class ThorDeck extends View {
         p.lineTo(5, 26);
         p.moveTo(14, 2);
         p.lineTo(14, 31);
+        return p;
+    }
+
+    private static Path glyphUnits() {
+        Path p = new Path();
+        p.addCircle(14, 15, 9, Path.Direction.CW);
+        p.moveTo(14, 1);
+        p.lineTo(14, 8);
+        p.moveTo(14, 22);
+        p.lineTo(14, 29);
+        p.moveTo(0, 15);
+        p.lineTo(7, 15);
+        p.moveTo(21, 15);
+        p.lineTo(28, 15);
+        return p;
+    }
+
+    private static Path glyphBase() {
+        Path p = new Path();
+        p.moveTo(2, 14);
+        p.lineTo(14, 3);
+        p.lineTo(26, 14);
+        p.moveTo(6, 11);
+        p.lineTo(6, 27);
+        p.lineTo(22, 27);
+        p.lineTo(22, 11);
+        p.moveTo(11, 27);
+        p.lineTo(11, 19);
+        p.lineTo(17, 19);
+        p.lineTo(17, 27);
         return p;
     }
 
@@ -834,6 +885,12 @@ public class ThorDeck extends View {
                     downButton = btnSell;
                 } else if (btnMenu.contains(x, y)) {
                     downButton = btnMenu;
+                } else if (btnUnits.contains(x, y)) {
+                    downButton = btnUnits;
+                    buttonLongFired = false;
+                    handler.postDelayed(buttonLongPress, 450);
+                } else if (btnBase.contains(x, y)) {
+                    downButton = btnBase;
                 } else {
                     for (int col = 0; col < 2; col++) {
                         if (columnPanel[col].contains(x, y)) {
@@ -870,6 +927,10 @@ public class ThorDeck extends View {
                 return true;
             case MotionEvent.ACTION_UP:
                 handler.removeCallbacks(longPress);
+                handler.removeCallbacks(buttonLongPress);
+                if (downButton == btnUnits && buttonLongFired) {
+                    downButton = null;
+                }
                 if (downButton != null && downButton.contains(x, y)) {
                     flashButton = downButton;
                     flashAt = SystemClock.uptimeMillis();
@@ -877,6 +938,10 @@ public class ThorDeck extends View {
                         NativeBridge.pushCommand(NativeBridge.CMD_REPAIR, 0, 0, 0);
                     } else if (downButton == btnSell) {
                         NativeBridge.pushCommand(NativeBridge.CMD_SELL, 0, 0, 0);
+                    } else if (downButton == btnUnits) {
+                        NativeBridge.pushCommand(CMD_JUMP, 0, 0, 0);
+                    } else if (downButton == btnBase) {
+                        NativeBridge.pushCommand(CMD_JUMP, 1, 0, 0);
                     } else {
                         NativeBridge.pushCommand(NativeBridge.CMD_KEY, SDL_SCANCODE_ESCAPE, 0, 0);
                     }

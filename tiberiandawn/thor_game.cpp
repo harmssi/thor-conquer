@@ -121,6 +121,9 @@ void Thor_Game_Command(const ThorCommand& cmd)
         /* Wie der Verkaufen-Knopf der Sidebar (BUTTON_UPGRADE). */
         Map.Sell_Mode_Control(-1);
         break;
+    case THOR_CMD_JUMP:
+        Thor_Game_Jump(cmd.a);
+        break;
     case THOR_CMD_TAKE_CONTROL:
         /* Undo the AI takeover: the human plays from here (same fields the takeover set). */
         if (Thor_Demo_Autopilot()) {
@@ -716,9 +719,83 @@ void Thor_Game_Set_View(bool mission)
             Map.Set_View_Dimensions(0, top);
         } else {
             /* Map smaller than the screen: centre it, the rest stays black. */
-            Map.Set_View_Dimensions(vx, vy, view_w / CELL_PIXEL_W, view_h / CELL_PIXEL_H);
+            /* TD takes width/height in pixels (RA: in cells). */
+            Map.Set_View_Dimensions(vx, vy, view_w, view_h);
         }
         Map.Flag_To_Redraw(true);
+    }
+}
+
+
+/* ======================================================================================
+** Deck: jump to own units / base, select own units on screen.
+** ====================================================================================*/
+static void Thor_Center_On(COORDINATE coord)
+{
+    int cellx = Coord_XCell(coord) - Lepton_To_Cell(Map.TacLeptonWidth) / 2;
+    int celly = Coord_YCell(coord) - Lepton_To_Cell(Map.TacLeptonHeight) / 2;
+    cellx = THOR_MAX(cellx, Map.MapCellX);
+    celly = THOR_MAX(celly, Map.MapCellY);
+    Map.Set_Tactical_Position(Cell_Coord(XY_Cell(cellx, celly)));
+    Map.DisplayClass::IsToRedraw = true;
+    Map.Flag_To_Redraw(true);
+}
+
+static void Thor_Collect_Units(TechnoClass** list, int& n, int cap)
+{
+    n = 0;
+    for (int i = 0; i < Units.Count() && n < cap; i++) {
+        TechnoClass* t = Units.Ptr(i);
+        if (t && !t->IsInLimbo && t->Strength > 0 && t->House == PlayerPtr) {
+            list[n++] = t;
+        }
+    }
+    for (int i = 0; i < Infantry.Count() && n < cap; i++) {
+        TechnoClass* t = Infantry.Ptr(i);
+        if (t && !t->IsInLimbo && t->Strength > 0 && t->House == PlayerPtr) {
+            list[n++] = t;
+        }
+    }
+}
+
+void Thor_Game_Jump(int what)
+{
+    static int next = 0;
+    TechnoClass* list[512];
+    int n = 0;
+    if (what == 0) {
+        Thor_Collect_Units(list, n, 512);
+        if (n > 0) {
+            next %= n;
+            Thor_Center_On(list[next]->Center_Coord());
+            next++;
+        }
+    } else if (what == 1) {
+        /* Like "H" in the original: construction yard first, otherwise any own building. */
+        BuildingClass* best = nullptr;
+        for (int i = 0; i < Buildings.Count(); i++) {
+            BuildingClass* b = Buildings.Ptr(i);
+            if (b && !b->IsInLimbo && b->House == PlayerPtr) {
+                if (!best || *b == STRUCT_CONST) {
+                    best = b;
+                }
+            }
+        }
+        if (best) {
+            Thor_Center_On(best->Center_Coord());
+        }
+    } else if (what == 2) {
+        Thor_Collect_Units(list, n, 512);
+        bool any = false;
+        for (int i = 0; i < n; i++) {
+            if (Map.In_View(Coord_Cell(list[i]->Center_Coord()))) {
+                if (!any) {
+                    Unselect_All();
+                    any = true;
+                }
+                list[i]->Select(true);
+            }
+        }
     }
 }
 

@@ -117,4 +117,6 @@
     <string name="deck_no_signal">NO SIGNAL</string>
     <string name="deck_h_autopilot">Autopilot</string>
     <string name="deck_d_autopilot">The AI plays. Tap AUTOPILOT above to take over.</string>
+    <string name="deck_btn_units">UNITS</string>
+    <string name="deck_btn_base">BASE</string>
 </resources>

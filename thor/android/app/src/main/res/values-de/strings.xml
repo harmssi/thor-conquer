@@ -101,4 +101,6 @@
     <string name="deck_no_signal">KEIN SIGNAL</string>
     <string name="deck_h_autopilot">Autopilot</string>
     <string name="deck_d_autopilot">Die KI spielt. Oben AUTOPILOT antippen, um zu übernehmen.</string>
+    <string name="deck_btn_units">EINHEITEN</string>
+    <string name="deck_btn_base">BASIS</string>
 </resources>

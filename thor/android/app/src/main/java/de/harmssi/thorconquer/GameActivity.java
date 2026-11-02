@@ -136,6 +136,13 @@ public class GameActivity extends SDLActivity {
                 }
                 return true;
             }
+            if (code == android.view.KeyEvent.KEYCODE_BUTTON_THUMBR || code == android.view.KeyEvent.KEYCODE_BUTTON_THUMBL) {
+                if (event.getAction() == android.view.KeyEvent.ACTION_DOWN && event.getRepeatCount() == 0) {
+                    // R3 = next own unit, L3 = base (like "H")
+                    NativeBridge.pushCommand(8, code == android.view.KeyEvent.KEYCODE_BUTTON_THUMBR ? 0 : 1, 0, 0);
+                }
+                return true;
+            }
             if (code == android.view.KeyEvent.KEYCODE_BUTTON_A && event.getAction() == android.view.KeyEvent.ACTION_DOWN
                     && event.getRepeatCount() == 0 && deck.activateFocus()) {
                 return true;

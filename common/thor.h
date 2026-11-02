@@ -27,7 +27,8 @@ enum ThorCommandType
     THOR_CMD_SELL = 4,        // Verkaufsmodus umschalten
     THOR_CMD_KEY = 5,         // a = SDL-Scancode (druecken + loslassen)
     THOR_CMD_SCROLL_STRIP = 6, // a = Spalte, b = Richtung (fuer Controller, optional)
-    THOR_CMD_TAKE_CONTROL = 7  // demo: hand the player house back to the human
+    THOR_CMD_TAKE_CONTROL = 7, // demo: hand the player house back to the human
+    THOR_CMD_JUMP = 8          // a: 0 = next own unit, 1 = base, 2 = select own units on screen
 };
 
 struct ThorCommand
@@ -135,6 +136,7 @@ void Thor_Game_Snapshot(std::vector<int>& out, std::vector<unsigned char>* radar
 bool Thor_Game_Cameo(int key, std::vector<unsigned char>& pixels, int& w, int& h);
 std::string Thor_Game_Item_Name(int key);
 void Thor_Game_Scroll(int dx_leptons, int dy_leptons);
+void Thor_Game_Jump(int what);
 int Thor_Pixel_To_Lepton(int pixels);
 
 /* video_sdl2.cpp */

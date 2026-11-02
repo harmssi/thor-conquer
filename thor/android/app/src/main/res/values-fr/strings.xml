@@ -106,4 +106,6 @@
     <string name="deck_no_signal">PAS DE SIGNAL</string>
     <string name="deck_h_autopilot">Pilote automatique</string>
     <string name="deck_d_autopilot">L\'IA joue. Touchez PILOTE AUTO en haut pour reprendre la main.</string>
+    <string name="deck_btn_units">UNITÉS</string>
+    <string name="deck_btn_base">BASE</string>
 </resources>
