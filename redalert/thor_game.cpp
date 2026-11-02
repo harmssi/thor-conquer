@@ -129,6 +129,14 @@ void Thor_Game_Command(const ThorCommand& cmd)
             PlayerPtr->IsHuman = true;
             PlayerPtr->IQ = 0;
             PlayerPtr->IsBaseBuilding = false;
+            /* Fill the build lists for buildings the AI placed (not "discovered" by the player yet). */
+            for (int i = 0; i < Buildings.Count(); i++) {
+                BuildingClass* b = Buildings.Ptr(i);
+                if (b && !b->IsInLimbo && b->House == PlayerPtr && b->Strength > 0) {
+                    b->IsDiscoveredByPlayer = true;
+                    b->Update_Buildables();
+                }
+            }
             Thor_Demo_Take_Control();
         }
         break;

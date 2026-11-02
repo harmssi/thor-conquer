@@ -78,7 +78,7 @@
     <string name="deck_h_sell">Verkaufsmodus</string>
     <string name="deck_d_sell">Oben auf ein Gebäude tippen. VERKAUFEN erneut tippen zum Beenden.</string>
     <string name="deck_h_ready">Bereit für Befehle</string>
-    <string name="deck_d_ready">Tippen = bauen · BEREIT tippen = einsetzen · lange drücken = anhalten/abbrechen.</string>
+    <string name="deck_d_ready">Tippen = bauen, lange drücken = anhalten/abbrechen. Oben: 1 Finger ziehen = Auswahlrahmen, 2 Finger = scrollen, lange drücken = abwählen.</string>
     <string name="deck_d_action">Erneut tippen = anhalten · lange drücken = anhalten/abbrechen.</string>
     <string name="deck_act_hold">%1$s · anhalten / abbrechen</string>
     <string name="deck_act_deploy">%1$s · einsetzen</string>

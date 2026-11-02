@@ -300,9 +300,9 @@ public class ThorDeck extends View {
         header.set(0, 0, w, 116 * s);
         float top = header.bottom + 24 * s;
         float leftW = 520 * s;
-        radarPanel.set(m, top, m + leftW, top + leftW + 44 * s);
+        radarPanel.set(m, top, m + leftW, top + leftW - 36 * s);
         radarArea.set(radarPanel.left + 16 * s, radarPanel.top + 48 * s, radarPanel.right - 16 * s, radarPanel.bottom - 16 * s);
-        float by = radarPanel.bottom + 20 * s, bh = 96 * s, gap = 12 * s;
+        float by = radarPanel.bottom + 16 * s, bh = 88 * s, gap = 10 * s;
         float bw = (leftW - 2 * gap) / 3f;
         btnRepair.set(m, by, m + bw, by + bh);
         btnSell.set(btnRepair.right + gap, by, btnRepair.right + gap + bw, by + bh);
@@ -630,7 +630,7 @@ public class ThorDeck extends View {
         }
         Paint hp = Ui.text(Ui.interSemi(), 26 * s, modal ? acc : Ui.TEXT);
         c.drawText(headline, x, y + 44 * s, hp);
-        drawWrapped(c, detail, x, y + 80 * s, statusPanel.width() - 36 * s, bodyDim, 30 * s, 3);
+        drawWrapped(c, detail, x, y + 76 * s, statusPanel.width() - 36 * s, bodyDim, 27 * s, 4);
     }
 
     private void drawWrapped(Canvas c, String text, float x, float y, float maxW, Paint p, float lh, int maxLines) {

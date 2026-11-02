@@ -33,6 +33,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
+#include "common/thor.h"
 #include "textblit.h"
 #include "common/vqatask.h"
 #include "common/vqaloader.h"
@@ -253,7 +254,11 @@ void Choose_Side(void)
     /*
     ** Skip the briefings if we're in special mode.
     */
-    if (Special.IsJurassic && AreThingiesEnabled) {
+    if ((Special.IsJurassic && AreThingiesEnabled)
+#ifdef THOR_ENABLED
+        || Thor_Skip_Movies() // launcher option "skip videos"
+#endif
+    ) {
         if (nodbrief) {
             VQA_Close(nodbrief);
             VQA_Free(nodbrief);

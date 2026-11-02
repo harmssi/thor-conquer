@@ -89,7 +89,7 @@
     <string name="deck_h_sell">Mode vente</string>
     <string name="deck_d_sell">Touchez un bâtiment sur l\'écran du haut. Touchez de nouveau VENDRE pour quitter.</string>
     <string name="deck_h_ready">En attente d\'ordres</string>
-    <string name="deck_d_ready">Touchez pour construire · touchez PRÊT pour déployer · appui long pour suspendre ou annuler.</string>
+    <string name="deck_d_ready">Touchez pour construire, appui long = suspendre/annuler. En haut : 1 doigt glissé = sélection, 2 doigts = défiler, appui long = désélectionner.</string>
     <string name="deck_d_action">Touchez de nouveau pour suspendre · appui long pour suspendre ou annuler.</string>
     <string name="deck_act_hold">%1$s · suspendre / annuler</string>
     <string name="deck_act_deploy">%1$s · déployer</string>

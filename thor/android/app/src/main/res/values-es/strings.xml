@@ -89,7 +89,7 @@
     <string name="deck_h_sell">Modo vender</string>
     <string name="deck_d_sell">Toca una estructura en la pantalla superior. Vuelve a tocar VENDER para salir.</string>
     <string name="deck_h_ready">Esperando órdenes</string>
-    <string name="deck_d_ready">Toca para construir · toca LISTO para desplegar · mantén pulsado para pausar o cancelar.</string>
+    <string name="deck_d_ready">Toca para construir, mantén pulsado = pausar/cancelar. Arriba: arrastra 1 dedo = selección, 2 dedos = desplazar, mantén pulsado = deseleccionar.</string>
     <string name="deck_d_action">Vuelve a tocar para pausar · mantén pulsado para pausar o cancelar.</string>
     <string name="deck_act_hold">%1$s · pausar / cancelar</string>
     <string name="deck_act_deploy">%1$s · desplegar</string>

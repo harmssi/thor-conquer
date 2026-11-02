@@ -96,7 +96,7 @@
     <string name="deck_h_sell">Sell mode</string>
     <string name="deck_d_sell">Tap a structure on the top screen. Tap SELL again to exit.</string>
     <string name="deck_h_ready">Ready for orders</string>
-    <string name="deck_d_ready">Tap to build · tap READY to deploy · long-press to hold or cancel.</string>
+    <string name="deck_d_ready">Tap to build, long-press = hold/cancel. Top screen: 1 finger drag = selection box, 2 fingers = scroll, long-press = deselect.</string>
     <string name="deck_d_action">Tap again to hold · long-press to hold or cancel.</string>
     <string name="deck_act_hold">%1$s · hold / cancel</string>
     <string name="deck_act_deploy">%1$s · deploy</string>

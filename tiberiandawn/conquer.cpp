@@ -2958,7 +2958,28 @@ int VQ_Call_Back(unsigned char*, int)
 
     Check_VQ_Palette_Set();
 
-    Interpolate_2X_Scale(&SysMemPage, &SeenBuff, NULL, Settings.Video.InterpolationMode);
+#if ANDROID
+    /*
+    ** Thor: sharp nearest-neighbour 2x instead of the palette interpolation (whose table comes out
+    ** wrong here and turns the briefings into noise).
+    */
+    if (SeenBuff.Get_Width() >= 640 && SeenBuff.Lock()) {
+        unsigned char const* src = (unsigned char const*)SysMemPage.Get_Offset();
+        unsigned char* dst = (unsigned char*)SeenBuff.Get_Offset();
+        int sw = SysMemPage.Get_Width(), sh = SysMemPage.Get_Height();
+        int dpitch = SeenBuff.Get_Width() + SeenBuff.Get_XAdd() + SeenBuff.Get_Pitch();
+        for (int y = 0; y < sh && y * 2 + 1 < SeenBuff.Get_Height(); y++) {
+            unsigned char* d = dst + (y * 2) * dpitch;
+            unsigned char const* sr = src + y * sw;
+            for (int x = 0; x < sw; x++) {
+                d[x * 2] = d[x * 2 + 1] = sr[x];
+            }
+            memcpy(d + dpitch, d, sw * 2);
+        }
+        SeenBuff.Unlock();
+    } else
+#endif
+        Interpolate_2X_Scale(&SysMemPage, &SeenBuff, NULL, Settings.Video.InterpolationMode);
     Frame_Limiter();
 
     if ((BreakoutAllowed || Debug_Flag) && key == KN_ESC) {
