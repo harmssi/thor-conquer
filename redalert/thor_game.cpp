@@ -668,6 +668,15 @@ void Thor_Game_Set_View(bool mission)
     WindowList[WINDOW_EDITOR][WINDOWHEIGHT] = h;
     Video_Set_View(x, y, w, h, true);
 
+    if (!mission && GameActive && Map.MapCellWidth > 0) {
+        /*
+        ** Dialog during a mission (options, message box, briefing): the map behind it is redrawn
+        ** too, so the tactical window must fit the 640x400 frame or it draws outside the buffer.
+        */
+        Map.Set_View_Dimensions(0, 0);
+        Map.Flag_To_Redraw(true);
+    }
+
     if (mission && GameActive && Map.MapCellWidth > 0) {
         /* Black borders, then the tactical view. No tab bar in dual-screen mode. */
         SeenBuff.Clear();
