@@ -56,6 +56,24 @@ struct ThorAccess
     }
 };
 
+/* Last spot where the player's base was attacked (Frame resets per mission, so -1/newer = none). */
+static COORDINATE ThorAttackCoord = 0;
+static int ThorAttackFrame = -1;
+
+void Thor_Game_Note_Attack(uint32_t coord)
+{
+    if (ThorAttackFrame < 0 || ThorAttackFrame > Frame || Frame - ThorAttackFrame >= TICKS_PER_SECOND * 30) {
+        Thor_Demo_Log("base_attacked", false, "base under attack at cell %d,%d", Coord_XCell(coord), Coord_YCell(coord));
+    }
+    ThorAttackCoord = (COORDINATE)coord;
+    ThorAttackFrame = Frame;
+}
+
+static bool Thor_Attack_Known()
+{
+    return ThorAttackFrame >= 0 && ThorAttackFrame <= Frame;
+}
+
 int Thor_Pixel_To_Lepton(int pixels)
 {
     return pixels < 0 ? -Pixel_To_Lepton(-pixels) : Pixel_To_Lepton(pixels);
@@ -184,6 +202,12 @@ void Thor_Game_Snapshot(std::vector<int>& out, std::vector<unsigned char>* radar
     }
     if (Thor_Demo_Autopilot()) {
         flags |= THOR_FLAG_AUTOPILOT;
+    }
+    if (Thor_Attack_Known()) {
+        flags |= THOR_FLAG_ALERT_KNOWN;
+        if (Frame - ThorAttackFrame < TICKS_PER_SECOND * 30) {
+            flags |= THOR_FLAG_ALERT;
+        }
     }
     out[5] = flags;
     out[6] = Map.MapCellX;
@@ -738,6 +762,31 @@ static void Thor_Collect_Units(TechnoClass** list, int& n, int cap)
     }
 }
 
+/* Bit per group number 0..9 that has living own members. */
+static int Thor_Groups_Used()
+{
+    int used = 0;
+    for (int i = 0; i < Units.Count(); i++) {
+        FootClass* f = Units.Ptr(i);
+        if (f && !f->IsInLimbo && f->Strength > 0 && f->House == PlayerPtr && f->Group < 10) {
+            used |= 1 << f->Group;
+        }
+    }
+    for (int i = 0; i < Infantry.Count(); i++) {
+        FootClass* f = Infantry.Ptr(i);
+        if (f && !f->IsInLimbo && f->Strength > 0 && f->House == PlayerPtr && f->Group < 10) {
+            used |= 1 << f->Group;
+        }
+    }
+    for (int i = 0; i < Aircraft.Count(); i++) {
+        FootClass* f = Aircraft.Ptr(i);
+        if (f && !f->IsInLimbo && f->Strength > 0 && f->House == PlayerPtr && f->Group < 10) {
+            used |= 1 << f->Group;
+        }
+    }
+    return used;
+}
+
 void Thor_Game_Jump(int what)
 {
     static int next = 0;
@@ -751,18 +800,33 @@ void Thor_Game_Jump(int what)
             next++;
         }
     } else if (what == 1) {
-        /* Like "H" in the original: construction yard first, otherwise any own building. */
-        BuildingClass* best = nullptr;
-        for (int i = 0; i < Buildings.Count(); i++) {
-            BuildingClass* b = Buildings.Ptr(i);
-            if (b && !b->IsInLimbo && b->House == PlayerPtr) {
-                if (!best || *b == STRUCT_CONST) {
-                    best = b;
+        /* Like "H" in the original, then repeated taps cycle through the factories. */
+        static int base_next = 0;
+        static uint32_t base_at = 0;
+        BuildingClass* blist[64];
+        int bn = 0;
+        /* pass 0: construction yards, 1: factories, 2 (only if nothing yet): any building */
+        for (int pass = 0; pass < 3; pass++) {
+            for (int i = 0; i < Buildings.Count() && bn < 64 && (pass < 2 || bn == 0); i++) {
+                BuildingClass* b = Buildings.Ptr(i);
+                if (!b || b->IsInLimbo || !(b->House == PlayerPtr) || b->Strength <= 0) {
+                    continue;
+                }
+                bool yard = *b == STRUCT_CONST;
+                if (pass == 2 || (pass == 0 && yard) || (pass == 1 && !yard && b->Class->ToBuild != RTTI_NONE)) {
+                    blist[bn++] = b;
                 }
             }
         }
-        if (best) {
-            Thor_Center_On(best->Center_Coord());
+        uint32_t now = SDL_GetTicks();
+        if (now - base_at > 4000) {
+            base_next = 0; // a fresh tap always starts at the construction yard
+        }
+        base_at = now;
+        if (bn > 0) {
+            base_next %= bn;
+            Thor_Center_On(blist[base_next]->Center_Coord());
+            base_next++;
         }
     } else if (what == 2) {
         Thor_Collect_Units(list, n, 512);
@@ -774,6 +838,48 @@ void Thor_Game_Jump(int what)
                     any = true;
                 }
                 list[i]->Select(true);
+            }
+        }
+    } else if (what == 3) {
+        /* Selection off screen: jump there. Otherwise select + centre the next group (like Alt+1..9). */
+        static int group_next = 0;
+        if (CurrentObject.Count() > 0) {
+            int x = 0, y = 0;
+            for (int i = 0; i < CurrentObject.Count(); i++) {
+                x += Coord_X(CurrentObject[i]->Center_Coord()) / CurrentObject.Count();
+                y += Coord_Y(CurrentObject[i]->Center_Coord()) / CurrentObject.Count();
+            }
+            COORDINATE center = XY_Coord(x, y);
+            if (!Map.In_View(Coord_Cell(center))) {
+                Thor_Center_On(center);
+                return;
+            }
+        }
+        int used = Thor_Groups_Used();
+        for (int k = 0; k < 10; k++) {
+            int g = (group_next + k) % 10;
+            if (used & (1 << g)) {
+                Handle_Team(g, 3);
+                group_next = g + 1;
+                break;
+            }
+        }
+    } else if (what == 4) {
+        if (Thor_Attack_Known()) {
+            Thor_Center_On(ThorAttackCoord);
+        }
+    } else if (what == 5) {
+        /* Make the selection a group (like Ctrl+1..9), first free number. */
+        bool feet = false;
+        for (int i = 0; i < CurrentObject.Count(); i++) {
+            RTTIType r = CurrentObject[i]->What_Am_I();
+            feet = feet || r == RTTI_UNIT || r == RTTI_INFANTRY || r == RTTI_AIRCRAFT;
+        }
+        int used = Thor_Groups_Used();
+        for (int g = 0; feet && g < 10; g++) {
+            if (!(used & (1 << g))) {
+                Handle_Team(g, 2);
+                break;
             }
         }
     }

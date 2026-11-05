@@ -1921,6 +1921,11 @@ void HouseClass::Super_Weapon_Handler(void)
 void HouseClass::Attacked(BuildingClass* source)
 {
     assert(Houses.ID(this) == ID);
+#ifdef THOR_ENABLED
+    if (this == PlayerPtr && source != NULL) {
+        Thor_Game_Note_Attack(source->Center_Coord()); // deck: ALERT jump target
+    }
+#endif
 
 #ifdef FIXIT_BASE_ANNOUNCE
     if (SpeakAttackDelay == 0

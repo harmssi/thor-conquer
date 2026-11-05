@@ -30,7 +30,7 @@ public class ThorDeck extends View {
     // States as THOR_STATE_* in common/thor.h
     static final int ST_AVAILABLE = 0, ST_BUILDING = 1, ST_ON_HOLD = 2, ST_READY = 3, ST_DISABLED = 4, ST_CHARGING = 5;
     static final int FL_RADAR = 1, FL_REPAIR = 2, FL_SELL = 4, FL_PLACING = 8, FL_TARGETING = 16, FL_REPAIR_OK = 32,
-            FL_AUTOPILOT = 64;
+            FL_AUTOPILOT = 64, FL_ALERT_KNOWN = 128, FL_ALERT = 256;
     static final int CMD_TAKE_CONTROL = 7;
     static final int CMD_JUMP = 8;
     static final int SDL_SCANCODE_ESCAPE = 41;
@@ -79,7 +79,7 @@ public class ThorDeck extends View {
     private final RectF header = new RectF();
     private final RectF radarPanel = new RectF(), radarArea = new RectF();
     private final RectF btnRepair = new RectF(), btnSell = new RectF(), btnMenu = new RectF();
-    private final RectF btnUnits = new RectF(), btnBase = new RectF();
+    private final RectF btnUnits = new RectF(), btnBase = new RectF(), btnGroup = new RectF(), btnAlert = new RectF();
     private boolean buttonLongFired;
     private final RectF statusPanel = new RectF();
     private final RectF chipRect = new RectF();
@@ -117,10 +117,11 @@ public class ThorDeck extends View {
     private final Runnable buttonLongPress = new Runnable() {
         @Override
         public void run() {
-            if (downButton == btnUnits) {
+            if (downButton == btnUnits || downButton == btnGroup) {
                 buttonLongFired = true;
-                NativeBridge.pushCommand(CMD_JUMP, 2, 0, 0); // select own units on screen
-                flashButton = btnUnits;
+                // UNITS: select own units on screen; GROUP: make the selection a group
+                NativeBridge.pushCommand(CMD_JUMP, downButton == btnUnits ? 2 : 5, 0, 0);
+                flashButton = downButton;
                 flashAt = SystemClock.uptimeMillis();
                 invalidate();
             }
@@ -307,9 +308,11 @@ public class ThorDeck extends View {
         btnRepair.set(m, by, m + bw, by + bh);
         btnSell.set(btnRepair.right + gap, by, btnRepair.right + gap + bw, by + bh);
         btnMenu.set(btnSell.right + gap, by, m + leftW, by + bh);
-        float by2 = btnRepair.bottom + gap, bw2 = (leftW - gap) / 2f;
+        float by2 = btnRepair.bottom + gap, bw2 = (leftW - 3 * gap) / 4f;
         btnUnits.set(m, by2, m + bw2, by2 + bh);
-        btnBase.set(btnUnits.right + gap, by2, m + leftW, by2 + bh);
+        btnBase.set(btnUnits.right + gap, by2, btnUnits.right + gap + bw2, by2 + bh);
+        btnGroup.set(btnBase.right + gap, by2, btnBase.right + gap + bw2, by2 + bh);
+        btnAlert.set(btnGroup.right + gap, by2, m + leftW, by2 + bh);
         statusPanel.set(m, btnUnits.bottom + 20 * s, m + leftW, h - m);
         float colX = radarPanel.right + 24 * s;
         float colW = (w - m - colX - 16 * s) / 2f;
@@ -349,6 +352,10 @@ public class ThorDeck extends View {
         drawButton(c, btnMenu, str(R.string.deck_menu), false, true, glyphMenu());
         drawButton(c, btnUnits, str(R.string.deck_btn_units), false, true, glyphUnits());
         drawButton(c, btnBase, str(R.string.deck_btn_base), false, true, glyphBase());
+        drawButton(c, btnGroup, str(R.string.deck_btn_group), false, true, glyphGroup());
+        // Base under attack: blinks for 30 s, then stays tappable (last attack spot).
+        boolean alert = (flags & FL_ALERT) != 0 && (SystemClock.uptimeMillis() / 400) % 2 == 0;
+        drawButton(c, btnAlert, str(R.string.deck_btn_alert), alert, (flags & FL_ALERT_KNOWN) != 0, glyphAlert());
         drawStatus(c);
         for (int col = 0; col < 2; col++) {
             drawColumn(c, col);
@@ -529,6 +536,10 @@ public class ThorDeck extends View {
         paint.setStyle(Paint.Style.FILL);
         Paint lp = Ui.label(15 * s, col);
         float tw = lp.measureText(label) - lp.getLetterSpacing() * lp.getTextSize();
+        if (tw > r.width() - 14 * s) { // long labels (DE/FR) on the narrow jump buttons
+            lp.setTextSize(lp.getTextSize() * (r.width() - 14 * s) / tw);
+            tw = lp.measureText(label) - lp.getLetterSpacing() * lp.getTextSize();
+        }
         c.drawText(label, r.centerX() - tw / 2, r.bottom - 16 * s, lp);
     }
 
@@ -582,6 +593,29 @@ public class ThorDeck extends View {
         p.lineTo(11, 19);
         p.lineTo(17, 19);
         p.lineTo(17, 27);
+        return p;
+    }
+
+    private static Path glyphGroup() {
+        Path p = new Path();
+        p.addRect(2, 4, 26, 28, Path.Direction.CW);
+        p.moveTo(8, 12);
+        p.lineTo(20, 12);
+        p.moveTo(8, 20);
+        p.lineTo(20, 20);
+        return p;
+    }
+
+    private static Path glyphAlert() {
+        Path p = new Path();
+        p.moveTo(14, 2);
+        p.lineTo(27, 27);
+        p.lineTo(1, 27);
+        p.close();
+        p.moveTo(14, 11);
+        p.lineTo(14, 18);
+        p.moveTo(14, 22);
+        p.lineTo(14, 23);
         return p;
     }
 
@@ -891,6 +925,12 @@ public class ThorDeck extends View {
                     handler.postDelayed(buttonLongPress, 450);
                 } else if (btnBase.contains(x, y)) {
                     downButton = btnBase;
+                } else if (btnGroup.contains(x, y)) {
+                    downButton = btnGroup;
+                    buttonLongFired = false;
+                    handler.postDelayed(buttonLongPress, 450);
+                } else if (btnAlert.contains(x, y)) {
+                    downButton = btnAlert;
                 } else {
                     for (int col = 0; col < 2; col++) {
                         if (columnPanel[col].contains(x, y)) {
@@ -928,7 +968,7 @@ public class ThorDeck extends View {
             case MotionEvent.ACTION_UP:
                 handler.removeCallbacks(longPress);
                 handler.removeCallbacks(buttonLongPress);
-                if (downButton == btnUnits && buttonLongFired) {
+                if ((downButton == btnUnits || downButton == btnGroup) && buttonLongFired) {
                     downButton = null;
                 }
                 if (downButton != null && downButton.contains(x, y)) {
@@ -942,6 +982,10 @@ public class ThorDeck extends View {
                         NativeBridge.pushCommand(CMD_JUMP, 0, 0, 0);
                     } else if (downButton == btnBase) {
                         NativeBridge.pushCommand(CMD_JUMP, 1, 0, 0);
+                    } else if (downButton == btnGroup) {
+                        NativeBridge.pushCommand(CMD_JUMP, 3, 0, 0);
+                    } else if (downButton == btnAlert) {
+                        NativeBridge.pushCommand(CMD_JUMP, 4, 0, 0);
                     } else {
                         NativeBridge.pushCommand(NativeBridge.CMD_KEY, SDL_SCANCODE_ESCAPE, 0, 0);
                     }

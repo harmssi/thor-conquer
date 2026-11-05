@@ -5,7 +5,7 @@
 Thor Conquer is an Android (arm64) build of [Vanilla Conquer](https://github.com/TheAssemblyArmada/Vanilla-Conquer) made for the AYN Thor dual-screen handheld:
 
 - **Top screen (1920×1080):** only the tactical map. The engine renders 960×540 and is scaled exactly 2× (pixel-perfect, no stretching, no bars), so you see far more of the battlefield at the classic sprite size. The sidebar and the top tab bar are gone. Menus, films and the score screen keep their original 640×400 layout and are shown as a centred frame, also at 2×. Maps smaller than the screen are centred on black.
-- **Bottom screen (1240×1080):** a touch command deck with credits, a power meter, a framed radar, REPAIR / SELL / MENU, UNITS / BASE jump buttons, and two build columns with the in-game cameos, build progress, READY and ON HOLD badges.
+- **Bottom screen (1240×1080):** a touch command deck with credits, a power meter, a framed radar, REPAIR / SELL / MENU, a jump row (UNITS / BASE / GROUP / ALERT), and two build columns with the in-game cameos, build progress, READY and ON HOLD badges.
 - **Controller and touch** on the top screen, a launcher with data check and settings, and an English UI with German, Spanish and French translations.
 
 ![Top and bottom screen on the AYN Thor](thor/docs/dual-screen.png)
@@ -41,7 +41,7 @@ If it works for you, a ⭐ on GitHub helps.
 |---|---|
 | **Dual screen** | The deck is an Android `Presentation` on display 4 (`FLAG_NOT_FOCUSABLE`, so the controller stays with the game). If there is no second screen, the classic sidebar is shown on the top screen instead. |
 | **Engine-faithful** | Every deck action goes through the engine's normal input path: build clicks run through the original sidebar button code, a radar tap does what a radar click does, and REPAIR and SELL are the sidebar buttons. No game state is changed directly. |
-| **Units / base** | UNITS: tap = centre on the next own unit (cycles), long-press = select all own units on screen. BASE: centre on the construction yard (like "H" in the original). Controller: R3 = next unit, L3 = base. |
+| **Jump row** | UNITS: tap = centre on the next own unit (cycles), long-press = select all own units on screen. BASE: construction yard first, repeated taps cycle through your factories. GROUP: tap = jump to the selected units (if off screen), otherwise select + centre the next group; long-press = make the selection a group (next free number, same as Ctrl+1–9). ALERT: blinks for 30 s when your base is under attack, tap = jump to the last attacked building. Controller: R3 = next unit, L3 = base. |
 | **Build deck** | Tap = build or deploy when READY. Tap again while building = hold. Long-press = hold, then cancel. The progress sweep is drawn over the cameo. The accent color follows the faction: amber for Allies/GDI, red for Soviet/Nod. |
 | **Radar** | The minimap is rendered from the engine's cell colors, with a viewport frame. Tap or drag on it to scroll the map. |
 | **Top-screen touch** | Tap = select / left click · drag = selection box · two-finger drag = scroll · long-press or two-finger tap = right click (deselect / cancel). |
@@ -151,7 +151,7 @@ The emblems, the app icon and the UI are original work. No EA/Westwood logos, fo
 
 ## Deutsch
 
-Thor Conquer bringt C&C Tiberian Dawn und Red Alert nativ auf den AYN Thor. Oben läuft nur die Karte im richtigen Seitenverhältnis. Unten liegt das Kommando-Deck mit Credits, Strom, Radar, REPARIEREN / VERKAUFEN / MENÜ und den Bauspalten. Die Bedienung funktioniert per Touch und Controller wie oben beschrieben.
+Thor Conquer bringt C&C Tiberian Dawn und Red Alert nativ auf den AYN Thor. Oben läuft nur die Karte im richtigen Seitenverhältnis. Unten liegt das Kommando-Deck mit Credits, Strom, Radar, REPARIEREN / VERKAUFEN / MENÜ, der Sprungleiste EINHEITEN / BASIS / GRUPPE / ALARM (Kamera zu Einheiten, Bauhof und Fabriken, Gruppen, letztem Angriff auf die Basis) und den Bauspalten. Die Bedienung funktioniert per Touch und Controller wie oben beschrieben.
 
 **Daten:** Die Originaldateien aus der eigenen *C&C Remastered Collection* (Steam, `Data/CNCDATA/`) gehören in die oben gezeigte Ordnerstruktur unter `/sdcard/Android/data/de.harmssi.thorconquer/files/`. Mit `thor/copy-data.sh` geht das per adb in einem Schritt. Der Launcher zeigt, was fehlt.
 

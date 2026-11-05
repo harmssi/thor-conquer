@@ -108,4 +108,6 @@
     <string name="deck_d_autopilot">Juega la IA. Toca PILOTO AUTO arriba para tomar el mando.</string>
     <string name="deck_btn_units">UNIDADES</string>
     <string name="deck_btn_base">BASE</string>
+    <string name="deck_btn_group">GRUPO</string>
+    <string name="deck_btn_alert">ALERTA</string>
 </resources>

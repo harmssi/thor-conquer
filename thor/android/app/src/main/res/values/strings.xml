@@ -119,4 +119,6 @@
     <string name="deck_d_autopilot">The AI plays. Tap AUTOPILOT above to take over.</string>
     <string name="deck_btn_units">UNITS</string>
     <string name="deck_btn_base">BASE</string>
+    <string name="deck_btn_group">GROUP</string>
+    <string name="deck_btn_alert">ALERT</string>
 </resources>

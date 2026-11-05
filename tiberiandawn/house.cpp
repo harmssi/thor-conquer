@@ -1671,6 +1671,11 @@ void HouseClass::AI(void)
 void HouseClass::Attacked(BuildingClass* source)
 {
     Validate();
+#ifdef THOR_ENABLED
+    if (this == PlayerPtr && source != NULL) {
+        Thor_Game_Note_Attack(source->Center_Coord()); // deck: ALERT jump target
+    }
+#endif
 
     if (SpeakAttackDelay.Expired() && PlayerPtr->Class->House == Class->House) {
 

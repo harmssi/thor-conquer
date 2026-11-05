@@ -103,4 +103,6 @@
     <string name="deck_d_autopilot">Die KI spielt. Oben AUTOPILOT antippen, um zu übernehmen.</string>
     <string name="deck_btn_units">EINHEITEN</string>
     <string name="deck_btn_base">BASIS</string>
+    <string name="deck_btn_group">GRUPPE</string>
+    <string name="deck_btn_alert">ALARM</string>
 </resources>

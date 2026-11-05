@@ -28,7 +28,8 @@ enum ThorCommandType
     THOR_CMD_KEY = 5,         // a = SDL-Scancode (druecken + loslassen)
     THOR_CMD_SCROLL_STRIP = 6, // a = Spalte, b = Richtung (fuer Controller, optional)
     THOR_CMD_TAKE_CONTROL = 7, // demo: hand the player house back to the human
-    THOR_CMD_JUMP = 8          // a: 0 = next own unit, 1 = base, 2 = select own units on screen
+    THOR_CMD_JUMP = 8          // a: 0 = next own unit, 1 = base (cycles yard/factories), 2 = select own units on
+                               // screen, 3 = selection / next group, 4 = last attack, 5 = make group of selection
 };
 
 struct ThorCommand
@@ -65,6 +66,8 @@ enum
     THOR_FLAG_TARGETING = 1 << 4,
     THOR_FLAG_REPAIR_AVAILABLE = 1 << 5,
     THOR_FLAG_AUTOPILOT = 1 << 6,
+    THOR_FLAG_ALERT_KNOWN = 1 << 7, // base was attacked in this mission (jump target exists)
+    THOR_FLAG_ALERT = 1 << 8,       // ... within the last 30 s
 };
 
 enum
@@ -137,6 +140,8 @@ bool Thor_Game_Cameo(int key, std::vector<unsigned char>& pixels, int& w, int& h
 std::string Thor_Game_Item_Name(int key);
 void Thor_Game_Scroll(int dx_leptons, int dy_leptons);
 void Thor_Game_Jump(int what);
+/* house.cpp, HouseClass::Attacked: the player's base is under attack at this coordinate. */
+void Thor_Game_Note_Attack(uint32_t coord);
 int Thor_Pixel_To_Lepton(int pixels);
 
 /* video_sdl2.cpp */
