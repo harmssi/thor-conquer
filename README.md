@@ -24,6 +24,8 @@ Thor Conquer is an Android (arm64) build of [Vanilla Conquer](https://github.com
 
 ▶ **[Watch the install guide](https://youtu.be/EZCMScoWK7o)** (2 min) · **[Full video](https://youtu.be/ZMGUqJJKna8)**
 
+Made a video about this? [Open an issue](../../issues/new) and I'll link it here.
+
 1. Install the APK from the [releases](https://github.com/harmssi/thor-conquer/releases) (Chrome: *Download anyway* → *Package installer* → *Settings* → *Allow from this source* → *Install*).
 2. Start the app. The launcher shows **DATA MISSING**; **DATA SETUP** shows the target folder.
 3. Copy `Data/CNCDATA` from your Steam *C&C Remastered Collection* to `/sdcard/Android/data/de.harmssi.thorconquer/files/` in the structure shown under [Game data](#game-data). Android only allows this from a PC over USB, or with `thor/copy-data.sh`.
