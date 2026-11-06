@@ -14,15 +14,13 @@ Thor Conquer is an Android (arm64) build of [Vanilla Conquer](https://github.com
 
 > Thor Conquer ships **no game data**; it runs on the original files from your own copy of the *C&C Remastered Collection*. The in-game picture above is rendered from the author's own copy.
 
-**Video:** [AYN Thor: I Made Red Alert a DUAL-SCREEN Game](https://youtu.be/ZMGUqJJKna8)
+▶ **[Watch the install guide](https://youtu.be/EZCMScoWK7o)** (2 min) · **[Showcase video](https://youtu.be/ZMGUqJJKna8)**
 
 **Download:** the APK is on the [Releases](../../releases) page (arm64, Android 13+).
 
 ---
 
 ## Quick start
-
-▶ **[Watch the install guide](https://youtu.be/EZCMScoWK7o)** (2 min) · **[Full video](https://youtu.be/ZMGUqJJKna8)**
 
 Made a video about this? [Open an issue](../../issues/new) and I'll link it here.
 
@@ -35,7 +33,7 @@ Made a video about this? [Open an issue](../../issues/new) and I'll link it here
 
 > Uninstalling the app deletes the data folder – keep a copy.
 
-If it works for you, a ⭐ on GitHub helps.
+If it works for you, a ⭐ on GitHub helps – and [subscribing on YouTube](https://www.youtube.com/@toravomusic?sub_confirmation=1) helps me bring more ports to the Thor.
 
 ---
 
