@@ -8,7 +8,9 @@ Thor Conquer is an Android (arm64) build of [Vanilla Conquer](https://github.com
 - **Bottom screen (1240×1080):** a touch command deck with credits, a power meter, a framed radar, REPAIR / SELL / MENU, a jump row (UNITS / BASE / GROUP / ALERT), and two build columns with the in-game cameos, build progress, READY and ON HOLD badges.
 - **Controller and touch** on the top screen, a launcher with data check and settings, and an English UI with German, Spanish and French translations.
 
-![Top and bottom screen on the AYN Thor](thor/docs/dual-screen.png)
+![Red Alert on the top screen, command deck with credits, power, radar, jump row (UNITS / BASE / GROUP / ALERT) and build columns on the bottom screen](thor/docs/dual-screen.jpg)
+
+<sub>Real screenshot from an AYN Thor, Thor Conquer 0.4.0 in AI demo mode (the computer plays your side; deck language follows the system language, German here).</sub>
 
 ![Launcher](thor/docs/launcher.png)
 
