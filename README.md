@@ -16,7 +16,7 @@ Thor Conquer is an Android (arm64) build of [Vanilla Conquer](https://github.com
 
 > Thor Conquer ships **no game data**; it runs on the original files from your own copy of the *C&C Remastered Collection*. The in-game picture above is rendered from the author's own copy.
 
-▶ **[Watch the install guide](https://youtu.be/EZCMScoWK7o)** (2 min) · **[Showcase video](https://youtu.be/ZMGUqJJKna8)**
+▶ **[Update video: 0.5.0](https://youtu.be/DhKwNZac5JE)** · **[Watch the install guide](https://youtu.be/EZCMScoWK7o)** (2 min) · **[Showcase video](https://youtu.be/ZMGUqJJKna8)**
 
 **Download:** the APK is on the [Releases](../../releases) page (arm64, Android 13+).
 

@@ -34,3 +34,5 @@ Install over 0.4.0, the game data stays.
 `ThorConquer-0.5.0.apk` · SHA-256 in `ThorConquer-0.5.0.apk.sha256` · signed with the same certificate as 0.3.x and 0.4.0.
 
 Command & Conquer is a trademark of Electronic Arts. This fan project is not affiliated with EA.
+
+▶ Update video: https://youtu.be/DhKwNZac5JE
