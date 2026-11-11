@@ -49,6 +49,7 @@ namespace
 
     std::map<int, CameoData> g_cameos;
     std::map<int, std::string> g_names;
+    std::vector<int> g_wanted; // interface art the deck asked for (decoded in the game thread)
 
     /* Nur Spiel-Thread. */
     float g_scroll_x = 0;
@@ -293,6 +294,11 @@ void Thor_Frame()
             }
         }
     }
+    {
+        std::lock_guard<std::mutex> guard(g_lock);
+        new_keys.insert(new_keys.end(), g_wanted.begin(), g_wanted.end());
+        g_wanted.clear();
+    }
     for (int key : new_keys) {
         CameoData cd;
         if (!Thor_Game_Cameo(key, cd.pixels, cd.w, cd.h)) {
@@ -420,7 +426,14 @@ thorCameo(int key, uint32_t* out, int cap, int* w, int* h)
     Thor_Get_Palette(pal);
     std::lock_guard<std::mutex> guard(g_lock);
     auto it = g_cameos.find(key);
-    if (it == g_cameos.end() || it->second.w <= 0) {
+    if (it == g_cameos.end()) {
+        /* Interface art is not part of the snapshot: remember the request for the game thread. */
+        if ((key >> 16) >= THOR_KEY_FONT && g_wanted.size() < 64) {
+            g_wanted.push_back(key);
+        }
+        return 0;
+    }
+    if (it->second.w <= 0) {
         return 0;
     }
     int n = it->second.w * it->second.h;

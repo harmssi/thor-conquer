@@ -5,12 +5,12 @@
 Thor Conquer is an Android (arm64) build of [Vanilla Conquer](https://github.com/TheAssemblyArmada/Vanilla-Conquer) made for the AYN Thor dual-screen handheld:
 
 - **Top screen (1920×1080):** only the tactical map. The engine renders 960×540 and is scaled exactly 2× (pixel-perfect, no stretching, no bars), so you see far more of the battlefield at the classic sprite size. The sidebar and the top tab bar are gone. Menus, films and the score screen keep their original 640×400 layout and are shown as a centred frame, also at 2×. Maps smaller than the screen are centred on black.
-- **Bottom screen (1240×1080):** a touch command deck with credits, a power meter, a framed radar, REPAIR / SELL / MENU, a jump row (UNITS / BASE / GROUP / ALERT), and two build columns with the in-game cameos, build progress, READY and ON HOLD badges.
+- **Bottom screen (1240×1080):** the game's own sidebar, grown into a touch command deck. The tab bar, the radar housing, REPAIR / SELL / MAP, the power bar, the strip arrows and the fonts are drawn with the interface art from your own game files. Around them: control groups, an order pad (select, stop, guard, scatter, primary building, jumps, game speed, quick save) and two build strips with the in-game cameos.
 - **Controller and touch** on the top screen, a launcher with data check and settings, and an English UI with German, Spanish and French translations.
 
-![Red Alert on the top screen, command deck with credits, power, radar, jump row (UNITS / BASE / GROUP / ALERT) and build columns on the bottom screen](thor/docs/dual-screen.jpg)
+![Red Alert on the top screen; on the bottom screen the deck in the game's sidebar look: tab bar, radar, REPAIR / SELL / MAP, control groups, order pad, power bar and build strips](thor/docs/deck-0.5.0.jpg)
 
-<sub>Real screenshot from an AYN Thor, Thor Conquer 0.4.0 in AI demo mode (the computer plays your side; deck language follows the system language, German here).</sub>
+<sub>Real screenshots from an AYN Thor, Thor Conquer 0.5.0, a skirmish as the Soviets. The sidebar art, fonts and cameos come from the player's own game files at runtime.</sub>
 
 ![Launcher](thor/docs/launcher.png)
 
@@ -45,9 +45,13 @@ If it works for you, a ⭐ on GitHub helps – and [subscribing on YouTube](http
 |---|---|
 | **Dual screen** | The deck is an Android `Presentation` on display 4 (`FLAG_NOT_FOCUSABLE`, so the controller stays with the game). If there is no second screen, the classic sidebar is shown on the top screen instead. |
 | **Engine-faithful** | Every deck action goes through the engine's normal input path: build clicks run through the original sidebar button code, a radar tap does what a radar click does, and REPAIR and SELL are the sidebar buttons. No game state is changed directly. |
-| **Jump row** | UNITS: tap = centre on the next own unit (cycles), long-press = select all own units on screen. BASE: construction yard first, repeated taps cycle through your factories. GROUP: tap = jump to the selected units (if off screen), otherwise select + centre the next group; long-press = make the selection a group (next free number, same as Ctrl+1–9). ALERT: blinks for 30 s when your base is under attack, tap = jump to the last attacked building. Controller: R3 = next unit, L3 = base. |
-| **Build deck** | Tap = build or deploy when READY. Tap again while building = hold. Long-press = hold, then cancel. The progress sweep is drawn over the cameo. The accent color follows the faction: amber for Allies/GDI, red for Soviet/Nod. |
-| **Radar** | The minimap is rendered from the engine's cell colors, with a viewport frame. Tap or drag on it to scroll the map. |
+| **Game look** | The deck is drawn with the game's own interface art, read at runtime from your game files (the MIX archives the engine opens anyway): sidebar and radar housing of your side, tab bar, REPAIR / SELL / MAP buttons, power bar, strip arrows, and the game's two sidebar fonts. Nothing of it is in the app or in this repository. |
+| **Control groups 1–4** | Hold = store the selection, tap = pick the group, tap again = look at it. The number of units is shown on the button. They are the same groups as the D-pad's (keys 1–4). |
+| **Order pad** | SELECT: tap = all own units in view, hold = the whole army. STOP, GUARD, SCATTER for the selection. PRIMARY makes the selected factory the primary one. DESELECT drops the selection and leaves repair or sell mode. |
+| **Jumps** | UNITS: centre on the next own unit (cycles). BASE: construction yard first, repeated taps cycle through your factories. ALERT: blinks for 30 s when your base is under attack, tap = jump to the last attacked building. Controller: R3 = next unit, L3 = base. |
+| **Speed and quick save** | SPEED: one step faster per tap (1–6, after 6 comes 1). SAVE writes a quick save, holding LOAD goes back to it (campaign missions; the quick save is slot 99 in the game's own load dialog, too). The Options tab opens the game menu. |
+| **Build strips** | Tap = build, or place when READY. Tap again while building = hold, tap again = go on. Long-press = cancel. The clock sweep is drawn over the cameo, the price below it. Drag a strip or use its arrows to scroll. |
+| **Radar** | The minimap is rendered from the engine's cell colors inside the game's radar housing, with the view box. Tap or drag on it to scroll the map. MAP zooms the radar in around the view and out again. |
 | **Top-screen touch** | Tap = select / left click · drag = selection box · two-finger drag = scroll · long-press or two-finger tap = right click (deselect / cancel). |
 | **Controller** | Left stick = cursor, right stick = scroll, A = left click, B = right click, Select = Esc (menu), Start = Enter, X/Y = G/F, D-pad = 1–4. **L1/R1** move a focus ring through the deck's build items, and **A** builds the focused item while the ring is visible. |
 | **Content** | Red Alert: Allied, Soviet, Counterstrike, Aftermath. Tiberian Dawn: GDI, Nod. Covert Operations is not supported yet. |
@@ -147,7 +151,7 @@ All engine changes are behind `#if ANDROID`.
 - Fonts: [Inter](https://rsms.me/inter/) and [JetBrains Mono](https://www.jetbrains.com/lp/mono/), SIL Open Font License 1.1 (see `thor/licenses/`)
 - Thor Conquer's own code is GPL-3.0, like the engine (see `License.txt`).
 
-The emblems, the app icon and the UI are original work. No EA/Westwood logos, fonts or artwork are included. Cameos and the radar are rendered at runtime from the user's own game files.
+The emblems, the app icon, the launcher and the deck code are original work. No EA/Westwood logos, fonts or artwork are included. The deck's sidebar art, fonts, cameos and the radar are read at runtime from the user's own game files; without them the deck falls back to plain bevels.
 
 **Trademark notice:** Command & Conquer, Red Alert and Tiberian Dawn are trademarks or registered trademarks of Electronic Arts Inc. This project is not affiliated with, endorsed by or sponsored by Electronic Arts. You need to own the game to use it.
 
@@ -155,7 +159,7 @@ The emblems, the app icon and the UI are original work. No EA/Westwood logos, fo
 
 ## Deutsch
 
-Thor Conquer bringt C&C Tiberian Dawn und Red Alert nativ auf den AYN Thor. Oben läuft nur die Karte im richtigen Seitenverhältnis. Unten liegt das Kommando-Deck mit Credits, Strom, Radar, REPARIEREN / VERKAUFEN / MENÜ, der Sprungleiste EINHEITEN / BASIS / GRUPPE / ALARM (Kamera zu Einheiten, Bauhof und Fabriken, Gruppen, letztem Angriff auf die Basis) und den Bauspalten. Die Bedienung funktioniert per Touch und Controller wie oben beschrieben.
+Thor Conquer bringt C&C Tiberian Dawn und Red Alert nativ auf den AYN Thor. Oben läuft nur die Karte im richtigen Seitenverhältnis. Unten liegt das Kommando-Deck im Aussehen der Original-Seitenleiste: Tab-Leiste, Radargehäuse, REPARIEREN / VERKAUFEN / KARTE, Stromleiste und Schriften kommen zur Laufzeit aus den eigenen Spieldateien. Dazu gibt es Gruppen 1–4 (halten = speichern, tippen = wählen), AUSWAHL, STOPP, WACHE, STREUEN, PRIMÄR, die Sprünge EINHEITEN / BASIS / ALARM, TEMPO, Schnellspeichern und die Bauspalten. Die Bedienung funktioniert per Touch und Controller wie oben beschrieben.
 
 **Daten:** Die Originaldateien aus der eigenen *C&C Remastered Collection* (Steam, `Data/CNCDATA/`) gehören in die oben gezeigte Ordnerstruktur unter `/sdcard/Android/data/de.harmssi.thorconquer/files/`. Mit `thor/copy-data.sh` geht das per adb in einem Schritt. Der Launcher zeigt, was fehlt.
 

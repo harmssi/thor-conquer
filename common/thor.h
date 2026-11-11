@@ -28,8 +28,40 @@ enum ThorCommandType
     THOR_CMD_KEY = 5,         // a = SDL-Scancode (druecken + loslassen)
     THOR_CMD_SCROLL_STRIP = 6, // a = Spalte, b = Richtung (fuer Controller, optional)
     THOR_CMD_TAKE_CONTROL = 7, // demo: hand the player house back to the human
-    THOR_CMD_JUMP = 8          // a: 0 = next own unit, 1 = base (cycles yard/factories), 2 = select own units on
+    THOR_CMD_JUMP = 8,         // a: 0 = next own unit, 1 = base (cycles yard/factories), 2 = select own units on
                                // screen, 3 = selection / next group, 4 = last attack, 5 = make group of selection
+    THOR_CMD_GROUP = 9,        // a = group 0..3, b: 0 = select, 1 = store the selection, 2 = select and centre
+    THOR_CMD_ORDER = 10,       // a: 0 = stop, 1 = guard area, 2 = scatter, 3 = select the whole army, 4 = deselect and
+                               // leave repair/sell mode, 5 = make the selected factory the primary one
+    THOR_CMD_SPEED = 11,       // a = engine game speed (1 fastest .. 6 slowest)
+    THOR_CMD_QUICK = 12        // a: 0 = quick save, 1 = quick load (single player only)
+};
+
+/* Interface art for the deck travels through the cameo channel under these key types. */
+enum
+{
+    THOR_KEY_FONT = 0x7E, // key = THOR_KEY_FONT << 16 | font (0 = small, 1 = tab font): atlas of ASCII 32..127
+    THOR_KEY_ART = 0x7F,  // key = THOR_KEY_ART << 16 | (side << 7 | THOR_ART_*) << 8 | frame
+    THOR_FONT_CELL = 20,  // atlas: 16 x 6 cells of this size
+};
+
+enum
+{
+    THOR_ART_SIDE_TOP = 0,
+    THOR_ART_SIDE_MID = 1,
+    THOR_ART_SIDE_BOTTOM = 2,
+    THOR_ART_STRIP = 3,
+    THOR_ART_RADAR = 4,
+    THOR_ART_RADAR_FRAME = 5,
+    THOR_ART_REPAIR = 6,
+    THOR_ART_SELL = 7,
+    THOR_ART_MAP = 8,
+    THOR_ART_POWERBAR = 9,
+    THOR_ART_POWER = 10,
+    THOR_ART_TABS = 11,
+    THOR_ART_STRIPUP = 12,
+    THOR_ART_STRIPDN = 13,
+    THOR_ART_COUNT
 };
 
 struct ThorCommand
@@ -47,13 +79,15 @@ struct ThorCommand
 **  [10..13] Sichtfenster in 1/16 Zellen (x, y, w, h)  [14] Anzahl Spalte 0  [15] Anzahl Spalte 1
 **  [16] Seite (0 = Alliierte/GDI, 1 = Sowjets/NOD)  [17] Radar-Puls-Zaehler (Demo-Radarsprung)
 **  [18] Highlight-Schluessel  [19] Highlight-Zaehler (Demo-Tipp auf dem Deck)
-**  ab [20]: je Eintrag THOR_ITEM_INTS Werte:
+**  [20] bit per control group 0..3 that has members  [21..24] members of group 0..3
+**  [25] game speed (engine value)  [26] number of selected objects  [27] group that is selected (-1 = none)
+**  ab [28]: je Eintrag THOR_ITEM_INTS Werte:
 **     Spalte, Index, Schluessel (RTTI << 16 | ID), Kosten, Zustand (THOR_STATE_*), Fortschritt 0..1000
 */
 enum
 {
-    THOR_SNAPSHOT_VERSION = 3,
-    THOR_HEADER_INTS = 20,
+    THOR_SNAPSHOT_VERSION = 4,
+    THOR_HEADER_INTS = 28,
     THOR_ITEM_INTS = 6,
 };
 
@@ -68,6 +102,9 @@ enum
     THOR_FLAG_AUTOPILOT = 1 << 6,
     THOR_FLAG_ALERT_KNOWN = 1 << 7, // base was attacked in this mission (jump target exists)
     THOR_FLAG_ALERT = 1 << 8,       // ... within the last 30 s
+    THOR_FLAG_PRIMARY_OK = 1 << 9,  // the selection is one own factory (can be made primary)
+    THOR_FLAG_SAVE_OK = 1 << 10,    // single player mission: quick save and load are allowed
+    THOR_FLAG_QUICKSAVE = 1 << 11,  // a quick save exists
 };
 
 enum

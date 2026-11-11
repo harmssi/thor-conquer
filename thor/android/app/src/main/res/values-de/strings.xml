@@ -51,45 +51,19 @@
     <string name="about_title">Über Thor Conquer</string>
     <string name="about_body">Thor Conquer ist eine native Android-Version von Vanilla Conquer für den AYN Thor, mit Kommando-Deck auf dem zweiten Bildschirm.\n\nBasiert auf Vanilla Conquer (TheAssemblyArmada) und dem Android-Fork von sandstranger, beide auf Grundlage des von Electronic Arts unter GPL-3.0 veröffentlichten Quellcodes. Lizenz: GPL-3.0.\n\nSchriften: Inter und JetBrains Mono, SIL Open Font License 1.1.\n\nCommand &amp; Conquer, Red Alert und Tiberian Dawn sind Marken von Electronic Arts Inc. Dieses Projekt steht in keiner Verbindung zu Electronic Arts.</string>
 
-    <string name="deck_credits">CREDITS</string>
-    <string name="deck_power">STROM</string>
-    <string name="deck_low_power">STROM KNAPP</string>
-    <string name="deck_output_drain">ERZEUGUNG / BEDARF</string>
-    <string name="deck_radar_hint">Radar bauen, um die Karte zu sehen</string>
     <string name="deck_repair">REPARIEREN</string>
     <string name="deck_sell">VERKAUFEN</string>
-    <string name="deck_menu">MENÜ</string>
     <string name="deck_structures">GEBÄUDE</string>
     <string name="deck_units">EINHEITEN</string>
     <string name="deck_ready">BEREIT</string>
     <string name="deck_on_hold">ANGEHALTEN</string>
-    <string name="deck_mode_place">PLATZIEREN</string>
-    <string name="deck_mode_target">ZIEL WÄHLEN</string>
-    <string name="deck_mode_repair">REPARATUR</string>
-    <string name="deck_mode_sell">VERKAUF</string>
     <string name="deck_side_allies">ALLIIERTE</string>
     <string name="deck_side_soviet">SOWJETS</string>
-    <string name="deck_h_place">Gebäude platzieren</string>
-    <string name="deck_d_place">Oben auf die Karte tippen. Dort lange drücken bricht ab.</string>
-    <string name="deck_h_target">Ziel wählen</string>
-    <string name="deck_d_target">Oben auf das Ziel tippen.</string>
-    <string name="deck_h_repair">Reparaturmodus</string>
-    <string name="deck_d_repair">Oben auf ein Gebäude tippen. REPARIEREN erneut tippen zum Beenden.</string>
-    <string name="deck_h_sell">Verkaufsmodus</string>
-    <string name="deck_d_sell">Oben auf ein Gebäude tippen. VERKAUFEN erneut tippen zum Beenden.</string>
-    <string name="deck_h_ready">Bereit für Befehle</string>
-    <string name="deck_d_ready">Tippen = bauen, lange drücken = anhalten/abbrechen. Oben: 1 Finger ziehen = Auswahlrahmen, 2 Finger = scrollen, lange drücken = abwählen.</string>
-    <string name="deck_d_action">Erneut tippen = anhalten · lange drücken = anhalten/abbrechen.</string>
-    <string name="deck_act_hold">%1$s · anhalten / abbrechen</string>
-    <string name="deck_act_deploy">%1$s · einsetzen</string>
     <string name="deck_standby">KOMMANDO-DECK · BEREITSCHAFT</string>
     <string name="deck_standby_hint">Bauleiste und Radar erscheinen hier, sobald eine Mission läuft.</string>
     <string name="set_language">SPRACHE</string>
     <string name="lang_system">System</string>
     <string name="sheet_ra_layout">MAIN.MIX von CD1 kommt nach allied/ (sie enthält die alliierte und die sowjetische Kampagne), MAIN.MIX von COUNTERSTRIKE und AFTERMATH nach counterstrike/ bzw. aftermath/.</string>
-    <string name="deck_status">STATUS</string>
-    <string name="deck_online">AKTIV</string>
-    <string name="deck_offline">INAKTIV</string>
     <string name="set_videos">VIDEOS</string>
     <string name="videos_play">Abspielen</string>
     <string name="videos_skip">Überspringen</string>
@@ -98,11 +72,39 @@
     <string name="off">Aus</string>
     <string name="on">An</string>
     <string name="deck_autopilot">AUTOPILOT</string>
-    <string name="deck_no_signal">KEIN SIGNAL</string>
-    <string name="deck_h_autopilot">Autopilot</string>
-    <string name="deck_d_autopilot">Die KI spielt. Oben AUTOPILOT antippen, um zu übernehmen.</string>
     <string name="deck_btn_units">EINHEITEN</string>
     <string name="deck_btn_base">BASIS</string>
-    <string name="deck_btn_group">GRUPPE</string>
     <string name="deck_btn_alert">ALARM</string>
+    <string name="deck_options">Optionen</string>
+    <string name="deck_map">KARTE</string>
+    <string name="deck_tab_place">BAUEN</string>
+    <string name="deck_tab_target">ZIEL</string>
+    <string name="deck_btn_select">AUSWAHL</string>
+    <string name="deck_btn_stop">STOPP</string>
+    <string name="deck_btn_guard">WACHE</string>
+    <string name="deck_btn_scatter">STREUEN</string>
+    <string name="deck_btn_primary">PRIMÄR</string>
+    <string name="deck_btn_deselect">ABWAHL</string>
+    <string name="deck_btn_speed">TEMPO</string>
+    <string name="deck_btn_save">SICHERN</string>
+    <string name="deck_btn_load">LADEN</string>
+    <string name="deck_s_ready">TIPPEN = BAUEN   NOCHMAL = PAUSE   LANG = ABBRUCH</string>
+    <string name="deck_s_place">PLATZIEREN: OBEN AUF DIE KARTE TIPPEN</string>
+    <string name="deck_s_target">ZIEL AUF DEM OBEREN BILDSCHIRM ANTIPPEN</string>
+    <string name="deck_s_repair">REPARIEREN: OBEN EIN GEBÄUDE ANTIPPEN</string>
+    <string name="deck_s_sell">VERKAUFEN: OBEN EIN GEBÄUDE ANTIPPEN</string>
+    <string name="deck_s_autopilot">DIE KI SPIELT - AUTOPILOT ANTIPPEN ZUM ÜBERNEHMEN</string>
+    <string name="deck_act_hold">%1$s - PAUSIERT</string>
+    <string name="deck_act_deploy">%1$s - BEREIT</string>
+    <string name="deck_act_cancel">%1$s - ABGEBROCHEN</string>
+    <string name="deck_hint_group_empty">GRUPPE %1$d IST LEER - HALTEN SPEICHERT DIE AUSWAHL</string>
+    <string name="deck_hint_group_set">AUSWAHL ALS GRUPPE %1$d GESPEICHERT</string>
+    <string name="deck_hint_group_none">ERST OBEN EINHEITEN AUSWÄHLEN</string>
+    <string name="deck_hint_select">EINHEITEN IM BILD GEWÄHLT - HALTEN = GANZE ARMEE</string>
+    <string name="deck_hint_army">GANZE ARMEE GEWÄHLT</string>
+    <string name="deck_hint_saved">SCHNELLSPEICHERN FERTIG</string>
+    <string name="deck_hint_campaign">SCHNELLSPEICHERN GEHT IN KAMPAGNEN-MISSIONEN</string>
+    <string name="deck_hint_load">LADEN HALTEN = ZURÜCK ZUM SPIELSTAND</string>
+    <string name="deck_hint_no_save">NOCH KEIN SCHNELLSPEICHERSTAND</string>
+    <string name="deck_hint_loaded">SPIELSTAND GELADEN</string>
 </resources>

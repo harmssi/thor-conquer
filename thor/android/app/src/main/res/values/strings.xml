@@ -63,43 +63,16 @@
     <string name="about_body">Thor Conquer is a native Android build of Vanilla Conquer for the AYN Thor, with a command deck on the second screen.\n\nBased on Vanilla Conquer (TheAssemblyArmada) and the Android fork by sandstranger, both built on the source code Electronic Arts released under GPL-3.0. Licensed under GPL-3.0.\n\nFonts: Inter and JetBrains Mono, SIL Open Font License 1.1.\n\nCommand &amp; Conquer, Red Alert and Tiberian Dawn are trademarks of Electronic Arts Inc. This project is not affiliated with or endorsed by Electronic Arts.</string>
 
     <!-- Deck -->
-    <string name="deck_credits">CREDITS</string>
-    <string name="deck_power">POWER</string>
-    <string name="deck_low_power">LOW POWER</string>
-    <string name="deck_output_drain">OUTPUT / DRAIN</string>
-    <string name="deck_radar">RADAR</string>
-    <string name="deck_online">ONLINE</string>
-    <string name="deck_offline">OFFLINE</string>
-    <string name="deck_radar_hint">Build a radar to enable the map</string>
     <string name="deck_repair">REPAIR</string>
     <string name="deck_sell">SELL</string>
-    <string name="deck_menu">MENU</string>
-    <string name="deck_status">STATUS</string>
     <string name="deck_structures">STRUCTURES</string>
     <string name="deck_units">UNITS</string>
     <string name="deck_ready">READY</string>
     <string name="deck_on_hold">ON HOLD</string>
-    <string name="deck_mode_place">PLACE STRUCTURE</string>
-    <string name="deck_mode_target">SELECT TARGET</string>
-    <string name="deck_mode_repair">REPAIR MODE</string>
-    <string name="deck_mode_sell">SELL MODE</string>
     <string name="deck_side_allies">ALLIES</string>
     <string name="deck_side_soviet">SOVIET</string>
     <string name="deck_side_gdi">GDI</string>
     <string name="deck_side_nod">NOD</string>
-    <string name="deck_h_place">Place structure</string>
-    <string name="deck_d_place">Tap the map on the top screen. Long-press there to cancel.</string>
-    <string name="deck_h_target">Select target</string>
-    <string name="deck_d_target">Tap the target on the top screen.</string>
-    <string name="deck_h_repair">Repair mode</string>
-    <string name="deck_d_repair">Tap a structure on the top screen. Tap REPAIR again to exit.</string>
-    <string name="deck_h_sell">Sell mode</string>
-    <string name="deck_d_sell">Tap a structure on the top screen. Tap SELL again to exit.</string>
-    <string name="deck_h_ready">Ready for orders</string>
-    <string name="deck_d_ready">Tap to build, long-press = hold/cancel. Top screen: 1 finger drag = selection box, 2 fingers = scroll, long-press = deselect.</string>
-    <string name="deck_d_action">Tap again to hold · long-press to hold or cancel.</string>
-    <string name="deck_act_hold">%1$s · hold / cancel</string>
-    <string name="deck_act_deploy">%1$s · deploy</string>
     <string name="deck_standby">COMMAND DECK · STANDBY</string>
     <string name="deck_standby_hint">Build bar and radar appear here once a mission is running.</string>
     <string name="set_language">LANGUAGE</string>
@@ -114,11 +87,39 @@
     <string name="on">On</string>
     <string name="res_wide" translatable="false">960×540 ·2</string>
     <string name="deck_autopilot">AUTOPILOT</string>
-    <string name="deck_no_signal">NO SIGNAL</string>
-    <string name="deck_h_autopilot">Autopilot</string>
-    <string name="deck_d_autopilot">The AI plays. Tap AUTOPILOT above to take over.</string>
     <string name="deck_btn_units">UNITS</string>
     <string name="deck_btn_base">BASE</string>
-    <string name="deck_btn_group">GROUP</string>
     <string name="deck_btn_alert">ALERT</string>
+    <string name="deck_options">Options</string>
+    <string name="deck_map">MAP</string>
+    <string name="deck_tab_place">PLACE</string>
+    <string name="deck_tab_target">TARGET</string>
+    <string name="deck_btn_select">SELECT</string>
+    <string name="deck_btn_stop">STOP</string>
+    <string name="deck_btn_guard">GUARD</string>
+    <string name="deck_btn_scatter">SCATTER</string>
+    <string name="deck_btn_primary">PRIMARY</string>
+    <string name="deck_btn_deselect">DESELECT</string>
+    <string name="deck_btn_speed">SPEED</string>
+    <string name="deck_btn_save">SAVE</string>
+    <string name="deck_btn_load">LOAD</string>
+    <string name="deck_s_ready">TAP = BUILD   TAP AGAIN = HOLD   LONG PRESS = CANCEL</string>
+    <string name="deck_s_place">PLACE IT: TAP THE MAP ON THE TOP SCREEN</string>
+    <string name="deck_s_target">PICK THE TARGET ON THE TOP SCREEN</string>
+    <string name="deck_s_repair">REPAIR: TAP A STRUCTURE ON THE TOP SCREEN</string>
+    <string name="deck_s_sell">SELL: TAP A STRUCTURE ON THE TOP SCREEN</string>
+    <string name="deck_s_autopilot">THE AI PLAYS - TAP AUTOPILOT TO TAKE OVER</string>
+    <string name="deck_act_hold">%1$s - ON HOLD</string>
+    <string name="deck_act_deploy">%1$s - READY</string>
+    <string name="deck_act_cancel">%1$s - CANCELLED</string>
+    <string name="deck_hint_group_empty">GROUP %1$d IS EMPTY - HOLD TO STORE THE SELECTION</string>
+    <string name="deck_hint_group_set">SELECTION STORED AS GROUP %1$d</string>
+    <string name="deck_hint_group_none">SELECT UNITS ON THE TOP SCREEN FIRST</string>
+    <string name="deck_hint_select">UNITS IN VIEW SELECTED - HOLD FOR THE WHOLE ARMY</string>
+    <string name="deck_hint_army">WHOLE ARMY SELECTED</string>
+    <string name="deck_hint_saved">QUICK SAVE WRITTEN</string>
+    <string name="deck_hint_campaign">QUICK SAVE WORKS IN CAMPAIGN MISSIONS</string>
+    <string name="deck_hint_load">HOLD LOAD TO GO BACK TO THE QUICK SAVE</string>
+    <string name="deck_hint_no_save">NO QUICK SAVE YET</string>
+    <string name="deck_hint_loaded">QUICK SAVE LOADED</string>
 </resources>

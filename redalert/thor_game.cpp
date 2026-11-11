@@ -11,6 +11,7 @@
 #ifdef THOR_ENABLED
 
 #include <SDL.h>
+#include <time.h>
 #define THOR_MIN(a, b) ((a) < (b) ? (a) : (b))
 #define THOR_MAX(a, b) max(a, b)
 
@@ -19,6 +20,11 @@
 #include "common/wwkeyboard_sdl2.h"
 
 void* Get_Shape_Header_Data(void* ptr);
+
+/* common/thor_deck.inc (included at the end of this file) */
+static bool Thor_Deck_Command(const ThorCommand& cmd);
+static void Thor_Deck_Snapshot(std::vector<int>& out);
+static bool Thor_Deck_Art(int key, std::vector<unsigned char>& pixels, int& w, int& h);
 
 static inline int Thor_Key_Of(RTTIType type, int id)
 {
@@ -121,6 +127,9 @@ void Thor_Game_Command(const ThorCommand& cmd)
     if (!GameActive || PlayerPtr == nullptr) {
         return;
     }
+    if (Thor_Deck_Command(cmd)) {
+        return;
+    }
     switch (cmd.type) {
     case THOR_CMD_BUILD_CLICK:
         ThorAccess::Build_Click(cmd.a, cmd.b, cmd.c >> 1, (cmd.c & 1) != 0);
@@ -220,6 +229,8 @@ void Thor_Game_Snapshot(std::vector<int>& out, std::vector<unsigned char>* radar
     out[13] = Map.TacLeptonHeight / 16;
     out[16] = (PlayerPtr->ActLike == HOUSE_USSR || PlayerPtr->ActLike == HOUSE_UKRAINE || PlayerPtr->ActLike == HOUSE_BAD) ? 1 : 0;
 
+    Thor_Deck_Snapshot(out);
+
     for (int col = 0; col < 2; col++) {
         SidebarClass::StripClass& strip = Map.Column[col];
         int count = 0;
@@ -295,6 +306,9 @@ void Thor_Game_Snapshot(std::vector<int>& out, std::vector<unsigned char>* radar
 
 bool Thor_Game_Cameo(int key, std::vector<unsigned char>& pixels, int& w, int& h)
 {
+    if ((key >> 16) >= THOR_KEY_FONT) {
+        return Thor_Deck_Art(key, pixels, w, h);
+    }
     RTTIType type = RTTIType(key >> 16);
     int id = key & 0xFFFF;
     void const* shape = nullptr;
@@ -325,6 +339,9 @@ bool Thor_Game_Cameo(int key, std::vector<unsigned char>& pixels, int& w, int& h
 
 std::string Thor_Game_Item_Name(int key)
 {
+    if ((key >> 16) >= THOR_KEY_FONT) {
+        return "";
+    }
     RTTIType type = RTTIType(key >> 16);
     int id = key & 0xFFFF;
     if (type == RTTI_SPECIAL) {
@@ -884,5 +901,45 @@ void Thor_Game_Jump(int what)
         }
     }
 }
+
+/* ======================================================================================
+** Deck: orders, control groups, quick save, interface art (shared source, see the .inc).
+** ====================================================================================*/
+#define THOR_HAS_VESSELS 1
+#define THOR_TARGET(obj) TargetClass(obj)
+#define THOR_SINGLE_PLAYER (Session.Type == GAME_NORMAL)
+#define THOR_AFTER_LOAD()                                                                                              \
+    do {                                                                                                               \
+        Hide_Mouse();                                                                                                  \
+        SeenPage.Clear();                                                                                              \
+        GamePalette.Set();                                                                                             \
+        Show_Mouse();                                                                                                  \
+    } while (0)
+
+/* The same files the sidebar, radar, power bar and tab bar load (side 0 = Allies, 1 = Soviets). */
+static void const* Thor_Art_Shape(int art, int side)
+{
+    static const char* const names[THOR_ART_COUNT][2] = {
+        {"SIDE1NA.SHP", "SIDE1US.SHP"},   {"SIDE2NA.SHP", "SIDE2US.SHP"},   {"SIDE3NA.SHP", "SIDE3US.SHP"},
+        {"STRIPNA.SHP", "STRIPUS.SHP"},   {"NATORADR.SHP", "USSRRADR.SHP"}, {"NRADRFRM.SHP", "URADRFRM.SHP"},
+        {"REPAIR.SHP", "REPAIR.SHP"},     {"SELL.SHP", "SELL.SHP"},         {"MAP.SHP", "MAP.SHP"},
+        {"POWERBAR.SHP", "POWERBAR.SHP"}, {"POWER.SHP", "POWER.SHP"},       {"TABS.SHP", "TABS.SHP"},
+        {"STRIPUP.SHP", "STRIPUP.SHP"},   {"STRIPDN.SHP", "STRIPDN.SHP"},
+    };
+    return (art >= 0 && art < THOR_ART_COUNT) ? MFCD::Retrieve(names[art][side]) : nullptr;
+}
+
+/* Font 1: the tab bar's metal font. Font 0: the small grey font of the sidebar. */
+static void Thor_Print(int font, const char* text, int x, int y)
+{
+    if (font == 1) {
+        Fancy_Text_Print("%s", x, y, &MetalScheme, TBLACK, TPF_METAL12 | TPF_USE_GRAD_PAL, text);
+    } else {
+        Fancy_Text_Print("%s", x, y, &ColorRemaps[PCOLOR_GREY], TBLACK,
+                         TPF_6PT_GRAD | TPF_USE_GRAD_PAL | TPF_NOSHADOW, text);
+    }
+}
+
+#include "common/thor_deck.inc"
 
 #endif

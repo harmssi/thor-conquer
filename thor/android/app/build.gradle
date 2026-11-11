@@ -22,8 +22,8 @@ android {
         applicationId 'de.harmssi.thorconquer'
         minSdk 33
         targetSdk 33
-        versionCode (project.hasProperty('thorVersionCode') ? (project.thorVersionCode as Integer) : 5)
-        versionName (project.hasProperty('thorVersionName') ? project.thorVersionName : '0.4.0')
+        versionCode (project.hasProperty('thorVersionCode') ? (project.thorVersionCode as Integer) : 6)
+        versionName (project.hasProperty('thorVersionName') ? project.thorVersionName : '0.5.0')
         ndk {
             abiFilters 'arm64-v8a'
         }
